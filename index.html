@@ -56,7 +56,6 @@ button {
 
 #yesBtn:hover {
   transform: scale(1.15);
-  box-shadow: 0 0 20px rgba(255,255,255,0.9);
 }
 
 #noBtn {
@@ -71,10 +70,11 @@ button {
   animation: pop 0.6s ease;
 }
 
-#finalGif {
-  width: min(80vw, 320px);
-  margin-top: 25px;
-  animation: float 3s ease-in-out infinite;
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 
 .heart {
@@ -110,9 +110,9 @@ button {
 
 <body>
 
-<!-- GIF AMOUR (intro, doux) -->
+<!-- GIF INTRO -->
 <img class="main"
-src="https://media.tenor.com/1G5t5sJYqv0AAAAC/animal-crossing-love.gif"
+src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
 alt="Animal Crossing Love">
 
 <h1>Camille, veux-tu être ma Valentine ? 💖</h1>
@@ -124,11 +124,9 @@ alt="Animal Crossing Love">
 
 <div id="result">
   <h1>Je le savais 🥹💞</h1>
-  <!-- GIF AMOUR FINAL -->
-  <img id="finalGif"
-  src="https://media.tenor.com/7RZz6YwzY3kAAAAC/animal-crossing-couple.gif"
-  alt="Animal Crossing Couple">
 </div>
+
+<canvas id="fireworks"></canvas>
 
 <script>
 let noTexts = [
@@ -160,8 +158,10 @@ function noClick() {
 function yesClick() {
   document.getElementById("buttons").style.display = "none";
   document.getElementById("result").style.display = "block";
+  startFireworks();
 }
 
+/* ❤️ Coeurs */
 setInterval(() => {
   const heart = document.createElement("div");
   heart.className = "heart";
@@ -170,6 +170,45 @@ setInterval(() => {
   document.body.appendChild(heart);
   setTimeout(() => heart.remove(), 6000);
 }, 1200);
+
+/* 🎆 FEUX D’ARTIFICE */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function startFireworks() {
+  setInterval(() => {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height / 2;
+    for (let i = 0; i < 40; i++) {
+      particles.push({
+        x, y,
+        dx: Math.cos(i) * Math.random() * 4,
+        dy: Math.sin(i) * Math.random() * 4,
+        life: 60
+      });
+    }
+  }, 600);
+}
+
+let particles = [];
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach((p, i) => {
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+    ctx.fill();
+    p.x += p.dx;
+    p.y += p.dy;
+    p.life--;
+    if (p.life <= 0) particles.splice(i, 1);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
 </script>
 
 </body>
