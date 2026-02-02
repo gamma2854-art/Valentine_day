@@ -6,9 +6,7 @@
 <title>Camille 💖</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   min-height: 100vh;
@@ -38,10 +36,7 @@ img.main {
   animation: float 3s ease-in-out infinite;
 }
 
-#buttons {
-  margin-top: 20px;
-  z-index: 2;
-}
+#buttons { margin-top: 20px; }
 
 button {
   padding: 1rem 2rem;
@@ -74,7 +69,6 @@ button {
   margin-top: 30px;
   color: white;
   animation: pop 0.6s ease;
-  z-index: 2;
 }
 
 #finalGif {
@@ -83,7 +77,6 @@ button {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Cœurs discrets */
 .heart {
   position: absolute;
   bottom: -30px;
@@ -92,7 +85,6 @@ button {
   animation: hearts 6s linear infinite;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -118,9 +110,9 @@ button {
 
 <body>
 
-<!-- GIF INTRO ANIMAL CROSSING -->
+<!-- GIF AMOUR (intro, doux) -->
 <img class="main"
-src="https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif"
+src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif"
 alt="Animal Crossing Love">
 
 <h1>Camille, veux-tu être ma Valentine ? 💖</h1>
@@ -132,8 +124,9 @@ alt="Animal Crossing Love">
 
 <div id="result">
   <h1>Je le savais 🥹💞</h1>
+  <!-- GIF AMOUR FINAL -->
   <img id="finalGif"
-  src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+  src="https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif"
   alt="Animal Crossing Couple">
 </div>
 
@@ -153,7 +146,6 @@ let noSize = 1.2;
 
 function noClick() {
   noCount++;
-
   document.getElementById("noBtn").innerText =
     noTexts[noCount % noTexts.length];
 
@@ -170,7 +162,6 @@ function yesClick() {
   document.getElementById("result").style.display = "block";
 }
 
-/* Cœurs discrets */
 setInterval(() => {
   const heart = document.createElement("div");
   heart.className = "heart";
