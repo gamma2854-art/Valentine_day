@@ -15,7 +15,7 @@ body {
   margin: 0;
   padding: 20px;
   text-align: center;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #89f7fe, #fbc2eb);
   display: flex;
   flex-direction: column;
@@ -25,7 +25,6 @@ body {
   animation: fadeIn 1s ease;
 }
 
-/* TITRES */
 h1 {
   color: white;
   font-size: clamp(1.8rem, 6vw, 3rem);
@@ -33,14 +32,12 @@ h1 {
   text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* IMAGE PRINCIPALE */
 img.main {
   width: min(75vw, 280px);
   margin-bottom: 20px;
   animation: float 3s ease-in-out infinite;
 }
 
-/* BOUTONS */
 #buttons {
   margin-top: 20px;
   z-index: 2;
@@ -72,7 +69,6 @@ button {
   color: white;
 }
 
-/* RESULTAT */
 #result {
   display: none;
   margin-top: 30px;
@@ -81,31 +77,22 @@ button {
   z-index: 2;
 }
 
-#result img {
+#finalGif {
   width: min(80vw, 320px);
-  margin-top: 20px;
+  margin-top: 25px;
+  animation: float 3s ease-in-out infinite;
 }
 
-/* BULLES (aquarium) */
-.bubble {
-  position: absolute;
-  bottom: -50px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.4);
-  animation: bubble 8s linear infinite;
-}
-
-/* COEURS */
+/* Cœurs discrets */
 .heart {
   position: absolute;
   bottom: -30px;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  opacity: 0.7;
   animation: hearts 6s linear infinite;
 }
 
-/* ANIMATIONS */
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -118,30 +105,25 @@ button {
 }
 
 @keyframes pop {
-  from { transform: scale(0.5); opacity: 0; }
+  from { transform: scale(0.6); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
-@keyframes bubble {
+@keyframes hearts {
   from { transform: translateY(0); opacity: 0.8; }
   to { transform: translateY(-120vh); opacity: 0; }
-}
-
-@keyframes hearts {
-  from { transform: translateY(0) scale(1); opacity: 1; }
-  to { transform: translateY(-120vh) scale(1.5); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- IMAGE ANIMAL CROSSING -->
+<!-- GIF INTRO ANIMAL CROSSING -->
 <img class="main"
-src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+src="https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif"
 alt="Animal Crossing Love">
 
-<h1>Camille, veux-tu être ma Valentine ? 💖🐠</h1>
+<h1>Camille, veux-tu être ma Valentine ? 💖</h1>
 
 <div id="buttons">
   <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
@@ -149,20 +131,20 @@ alt="Animal Crossing Love">
 </div>
 
 <div id="result">
-  <h1>YEEES 🎉💞</h1>
-  <img
-  src="https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif"
-  alt="Animal Crossing Love">
+  <h1>Je le savais 🥹💞</h1>
+  <img id="finalGif"
+  src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+  alt="Animal Crossing Couple">
 </div>
 
 <script>
 let noTexts = [
   "Non",
   "Hmm…",
-  "Tu es sûre ? 🐟",
+  "Tu es sûre ? 🥺",
   "Vraiment sûre ?",
   "Dernière chance 😳",
-  "Je suis patient 🥹"
+  "Bon… j’attends 💞"
 ];
 
 let noCount = 0;
@@ -188,16 +170,7 @@ function yesClick() {
   document.getElementById("result").style.display = "block";
 }
 
-/* Générateur bulles + coeurs */
-setInterval(() => {
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.style.left = Math.random() * 100 + "vw";
-  bubble.style.width = bubble.style.height = 10 + Math.random() * 20 + "px";
-  document.body.appendChild(bubble);
-  setTimeout(() => bubble.remove(), 8000);
-}, 700);
-
+/* Cœurs discrets */
 setInterval(() => {
   const heart = document.createElement("div");
   heart.className = "heart";
@@ -205,7 +178,7 @@ setInterval(() => {
   heart.style.left = Math.random() * 100 + "vw";
   document.body.appendChild(heart);
   setTimeout(() => heart.remove(), 6000);
-}, 900);
+}, 1200);
 </script>
 
 </body>
