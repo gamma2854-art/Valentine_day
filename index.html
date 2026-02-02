@@ -14,7 +14,7 @@ body {
   padding: 20px;
   text-align: center;
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #89f7fe, #fbc2eb);
+  background: linear-gradient(180deg, #0f2027, #203a43, #2c5364);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,7 +27,7 @@ h1 {
   color: white;
   font-size: clamp(1.8rem, 6vw, 3rem);
   margin: 20px 0;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  text-shadow: 0 2px 10px rgba(255,182,193,0.6);
 }
 
 img.main {
@@ -49,9 +49,9 @@ button {
 }
 
 #yesBtn {
-  background-color: #ff7eb3;
+  background-color: #ff5f9e;
   color: white;
-  box-shadow: 0 0 10px rgba(255,255,255,0.5);
+  box-shadow: 0 0 15px rgba(255,95,158,0.8);
 }
 
 #yesBtn:hover {
@@ -161,7 +161,7 @@ function yesClick() {
   startFireworks();
 }
 
-/* ❤️ Coeurs */
+/* 💖 Coeurs */
 setInterval(() => {
   const heart = document.createElement("div");
   heart.className = "heart";
@@ -171,35 +171,39 @@ setInterval(() => {
   setTimeout(() => heart.remove(), 6000);
 }, 1200);
 
-/* 🎆 FEUX D’ARTIFICE */
+/* 🎆 FEUX D’ARTIFICE ROSE / ROUGE */
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+let particles = [];
+const colors = ["#ff4d6d", "#ff85a1", "#ff1e56"];
+
 function startFireworks() {
   setInterval(() => {
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height / 2;
-    for (let i = 0; i < 40; i++) {
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < 50; i++) {
       particles.push({
         x, y,
         dx: Math.cos(i) * Math.random() * 4,
         dy: Math.sin(i) * Math.random() * 4,
-        life: 60
+        life: 60,
+        color
       });
     }
-  }, 600);
+  }, 700);
 }
-
-let particles = [];
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles.forEach((p, i) => {
-    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.fillStyle = p.color;
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
     ctx.fill();
     p.x += p.dx;
     p.y += p.dy;
