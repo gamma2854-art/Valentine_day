@@ -2,55 +2,112 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Camille 💖</title>
+
 <style>
-body {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-  margin-top: 60px;
+/* RESET */
+* {
+  box-sizing: border-box;
 }
 
+/* BODY */
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 1.2s ease;
+}
+
+/* TITRE */
 h1 {
   color: white;
-  font-size: 32px;
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  margin: 20px 0;
 }
 
+/* IMAGE COEUR */
 img.heart {
-  width: 160px;
+  width: min(70vw, 260px);
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* BOUTONS */
+#buttons {
+  margin-top: 20px;
 }
 
 button {
-  padding: 15px 30px;
-  font-size: 20px;
-  margin: 15px;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  margin: 10px;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
+/* OUI */
 #yesBtn {
   background-color: #4CAF50;
   color: white;
 }
 
+#yesBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255,255,255,0.6);
+}
+
+/* NON */
 #noBtn {
   background-color: #f44336;
   color: white;
 }
 
+/* RESULTAT */
 #result {
   display: none;
   margin-top: 30px;
   color: white;
+  animation: pop 0.6s ease;
+}
+
+#result img {
+  width: min(70vw, 300px);
+  margin-top: 20px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 </style>
 </head>
 
 <body>
 
-<img class="heart" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+<img class="heart" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="heart">
 
 <h1>Camille, veux-tu être ma Valentine ? 💘</h1>
 
@@ -61,7 +118,7 @@ button {
 
 <div id="result">
   <h1>YEEES 🎉💞</h1>
-  <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif">
+  <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" alt="love">
 </div>
 
 <script>
@@ -75,24 +132,21 @@ let noTexts = [
 ];
 
 let noCount = 0;
-let yesSize = 20;
-let noSize = 20;
+let yesSize = 1.2;
+let noSize = 1.2;
 
 function noClick() {
   noCount++;
-  
-  // change texte
+
   document.getElementById("noBtn").innerText =
     noTexts[noCount % noTexts.length];
 
-  // grossit oui
-  yesSize += 6;
-  document.getElementById("yesBtn").style.fontSize = yesSize + "px";
+  yesSize += 0.25;
+  document.getElementById("yesBtn").style.fontSize = yesSize + "rem";
 
-  // rétrécit non
-  noSize -= 2;
-  if (noSize < 8) noSize = 8;
-  document.getElementById("noBtn").style.fontSize = noSize + "px";
+  noSize -= 0.1;
+  if (noSize < 0.6) noSize = 0.6;
+  document.getElementById("noBtn").style.fontSize = noSize + "rem";
 }
 
 function yesClick() {
