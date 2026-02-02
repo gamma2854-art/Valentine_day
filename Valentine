@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Camille 💖</title>
 
+<style>
+body {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  margin-top: 60px;
+}
+
+h1 {
+  color: white;
+  font-size: 32px;
+}
+
+img.heart {
+  width: 160px;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 20px;
+  margin: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#yesBtn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#noBtn {
+  background-color: #f44336;
+  color: white;
+}
+
+#result {
+  display: none;
+  margin-top: 30px;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<img class="heart" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+
+<h1>Camille, veux-tu être ma Valentine ? 💘</h1>
+
+<div id="buttons">
+  <button id="yesBtn" onclick="yesClick()">Oui 💖</button>
+  <button id="noBtn" onclick="noClick()">Non</button>
+</div>
+
+<div id="result">
+  <h1>YEEES 🎉💞</h1>
+  <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif">
+</div>
+
+<script>
+let noTexts = [
+  "Non",
+  "Dommage...",
+  "Oh non 😢",
+  "Tu es sûre ?",
+  "Vraiment sûre ?",
+  "Dernière chance 😳"
+];
+
+let noCount = 0;
+let yesSize = 20;
+let noSize = 20;
+
+function noClick() {
+  noCount++;
+  
+  // change texte
+  document.getElementById("noBtn").innerText =
+    noTexts[noCount % noTexts.length];
+
+  // grossit oui
+  yesSize += 6;
+  document.getElementById("yesBtn").style.fontSize = yesSize + "px";
+
+  // rétrécit non
+  noSize -= 2;
+  if (noSize < 8) noSize = 8;
+  document.getElementById("noBtn").style.fontSize = noSize + "px";
+}
+
+function yesClick() {
+  document.getElementById("buttons").style.display = "none";
+  document.getElementById("result").style.display = "block";
+}
+</script>
+
+</body>
+</html>
