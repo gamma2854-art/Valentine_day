@@ -3,40 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Camille 💖</title>
 
 <style>
-/* RESET */
 * {
   box-sizing: border-box;
 }
 
-/* BODY */
 body {
   min-height: 100vh;
   margin: 0;
   padding: 20px;
   text-align: center;
   font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  background: linear-gradient(180deg, #89f7fe, #fbc2eb);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 1.2s ease;
+  overflow: hidden;
+  animation: fadeIn 1s ease;
 }
 
-/* TITRE */
+/* TITRES */
 h1 {
   color: white;
   font-size: clamp(1.8rem, 6vw, 3rem);
   margin: 20px 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* IMAGE COEUR */
-img.heart {
-  width: min(70vw, 260px);
+/* IMAGE PRINCIPALE */
+img.main {
+  width: min(75vw, 280px);
   margin-bottom: 20px;
   animation: float 3s ease-in-out infinite;
 }
@@ -44,6 +43,7 @@ img.heart {
 /* BOUTONS */
 #buttons {
   margin-top: 20px;
+  z-index: 2;
 }
 
 button {
@@ -51,25 +51,24 @@ button {
   font-size: 1.2rem;
   margin: 10px;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* OUI */
 #yesBtn {
-  background-color: #4CAF50;
+  background-color: #ff7eb3;
   color: white;
+  box-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 #yesBtn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(255,255,255,0.6);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(255,255,255,0.9);
 }
 
-/* NON */
 #noBtn {
-  background-color: #f44336;
+  background-color: #4facfe;
   color: white;
 }
 
@@ -79,11 +78,31 @@ button {
   margin-top: 30px;
   color: white;
   animation: pop 0.6s ease;
+  z-index: 2;
 }
 
 #result img {
-  width: min(70vw, 300px);
+  width: min(80vw, 320px);
   margin-top: 20px;
+}
+
+/* BULLES (aquarium) */
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  animation: bubble 8s linear infinite;
+}
+
+/* COEURS */
+.heart {
+  position: absolute;
+  bottom: -30px;
+  font-size: 1.5rem;
+  animation: hearts 6s linear infinite;
 }
 
 /* ANIMATIONS */
@@ -94,41 +113,56 @@ button {
 
 @keyframes float {
   0% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-12px); }
   100% { transform: translateY(0); }
 }
 
 @keyframes pop {
-  0% { transform: scale(0.6); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bubble {
+  from { transform: translateY(0); opacity: 0.8; }
+  to { transform: translateY(-120vh); opacity: 0; }
+}
+
+@keyframes hearts {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(-120vh) scale(1.5); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<img class="heart" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="heart">
+<!-- IMAGE ANIMAL CROSSING -->
+<img class="main"
+src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+alt="Animal Crossing Love">
 
-<h1>Camille, veux-tu être ma Valentine ? 💘</h1>
+<h1>Camille, veux-tu être ma Valentine ? 💖🐠</h1>
 
 <div id="buttons">
-  <button id="yesBtn" onclick="yesClick()">Oui 💖</button>
+  <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
   <button id="noBtn" onclick="noClick()">Non</button>
 </div>
 
 <div id="result">
   <h1>YEEES 🎉💞</h1>
-  <img src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif" alt="love">
+  <img
+  src="https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif"
+  alt="Animal Crossing Love">
 </div>
 
 <script>
 let noTexts = [
   "Non",
-  "Dommage...",
-  "Oh non 😢",
-  "Tu es sûre ?",
+  "Hmm…",
+  "Tu es sûre ? 🐟",
   "Vraiment sûre ?",
-  "Dernière chance 😳"
+  "Dernière chance 😳",
+  "Je suis patient 🥹"
 ];
 
 let noCount = 0;
@@ -141,7 +175,7 @@ function noClick() {
   document.getElementById("noBtn").innerText =
     noTexts[noCount % noTexts.length];
 
-  yesSize += 0.25;
+  yesSize += 0.3;
   document.getElementById("yesBtn").style.fontSize = yesSize + "rem";
 
   noSize -= 0.1;
@@ -153,6 +187,25 @@ function yesClick() {
   document.getElementById("buttons").style.display = "none";
   document.getElementById("result").style.display = "block";
 }
+
+/* Générateur bulles + coeurs */
+setInterval(() => {
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.style.left = Math.random() * 100 + "vw";
+  bubble.style.width = bubble.style.height = 10 + Math.random() * 20 + "px";
+  document.body.appendChild(bubble);
+  setTimeout(() => bubble.remove(), 8000);
+}, 700);
+
+setInterval(() => {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}, 900);
 </script>
 
 </body>
