@@ -40,6 +40,22 @@ body {
   50% { opacity:1 }
 }
 
+/* 💕 pluie de cœurs */
+.heart-rain {
+  position: fixed;
+  top: -40px;
+  pointer-events: none;
+  animation: fall linear forwards;
+  z-index: 1;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
 /* OVERLAY */
 .letter-overlay {
   position: fixed;
@@ -132,7 +148,7 @@ body {
   transform: translateX(-50%) translateY(-140px) scale(1);
 }
 
-/* ❤️ cœur maintenant sur la feuille */
+/* ❤️ cœur sur la feuille */
 .paper-heart{
   font-size: clamp(42px, 6vw, 64px);
   animation: heartPulse 2s infinite;
@@ -293,6 +309,7 @@ function openLetterStep() {
       overlay.style.display="none";
       content.style.display="flex";
       createStars();
+      startHeartRain(); // 💕
     },1500);
   }
 }
@@ -313,6 +330,30 @@ function yesClick(){
   fireworksRunning = true;
 }
 
+/* 💕 pluie infinie de cœurs */
+let heartRainInterval = null;
+
+function startHeartRain() {
+  if (heartRainInterval) return;
+
+  const hearts = ["❤️", "🩷"];
+
+  heartRainInterval = setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart-rain";
+    heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = 18 + Math.random() * 26 + "px";
+    heart.style.animationDuration = 4 + Math.random() * 4 + "s";
+    heart.style.opacity = 0.6 + Math.random() * 0.4;
+
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 9000);
+  }, 220);
+}
+
+/* 🎆 feux d'artifice */
 const canvas = document.getElementById("fw");
 const ctx = canvas.getContext("2d");
 resize();
