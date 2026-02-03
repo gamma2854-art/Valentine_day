@@ -6,161 +6,179 @@
 <title>Camille 💖</title>
 
 <style>
-*{box-sizing:border-box}
+* { box-sizing: border-box; }
 
-body{
-  min-height:100vh;
-  margin:0;
-  font-family:Arial,sans-serif;
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
   background:
-    radial-gradient(circle at top,#5f9cff,#2b4a9a 35%,#0b1026 75%),
-    linear-gradient(180deg,#ff9a9e,#fad0c4);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
+    radial-gradient(circle at top, #5f9cff, #2b4a9a 35%, #0b1026 75%),
+    linear-gradient(180deg, #ff9a9e, #fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
-/* overlay */
-.letter-overlay{
-  position:fixed; inset:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+/* OVERLAY */
+.letter-overlay {
+  position: fixed;
+  inset: 0;
+  background: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 1s ease;
 }
 
-/* enveloppe */
-.envelope-wrapper{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  cursor:pointer;
-  perspective:1000px;
+/* ENVELOPPE */
+.envelope-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  perspective: 900px;
 }
 
-.envelope{
-  position:relative;
-  width:340px;
-  height:220px;
-  transform-style:preserve-3d;
+.envelope {
+  position: relative;
+  width: clamp(260px, 45vw, 360px);
+  height: clamp(180px, 30vw, 240px);
+  background: linear-gradient(#ffd6e7, #ff9fc5);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.4s ease;
+  overflow: hidden;
 }
 
-/* corps enveloppe */
-.env-body{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(#ffd6e7,#ff9fc5);
-  border-radius:12px;
-  box-shadow:0 25px 50px rgba(0,0,0,.35);
-  overflow:hidden;
-  z-index:1;
-}
-
-/* face avant */
-.env-front{
-  position:absolute;
-  left:0; right:0; bottom:0;
-  height:65%;
-  background:linear-gradient(#ffc2da,#ff8fbe);
-  z-index:3;
-}
+.envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
+.envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
 
 /* rabat */
-.flap{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(#ffb3cf,#ff8fbe);
-  clip-path:polygon(0 0,100% 0,50% 60%);
-  transform-origin:top center;
-  transition:transform 1s cubic-bezier(.22,1,.36,1);
-  z-index:4;
-  backface-visibility:hidden;
+.flap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#ffb3cf, #ff8fbe);
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.9s cubic-bezier(.22,1,.36,1);
+  z-index: 4;
+  backface-visibility: hidden;
 }
 
-.envelope.open .flap{
-  transform:rotateX(175deg);
+.envelope.open .flap {
+  transform: rotateX(175deg);
 }
 
-/* bascule clic */
-.envelope.tilt-left{transform:rotateY(-18deg)}
-.envelope.tilt-right{transform:rotateY(18deg)}
-
-/* ✅ FEUILLE — corrigée (plus visible au début) */
-.paper{
-  position:absolute;
-  left:50%;
-  width:70%;
-  height:90%;
-  background:white;
-  border-radius:8px;
-  transform:translateX(-50%);
-  bottom:-120%;          /* <-- correction */
-  z-index:2;
-  transition:bottom 1.4s ease;
+/* papier */
+.paper {
+  position: absolute;
+  left: 50%;
+  bottom: -70%;
+  width: 72%;
+  height: 90%;
+  background: white;
+  border-radius: 8px;
+  transform: translateX(-50%);
+  transition: bottom 1.2s ease, transform 1.2s ease, opacity 1s ease;
+  z-index: 2;
+  opacity: 0;
 }
 
-.envelope.open .paper{
-  bottom:35%;
+.envelope.open .paper {
+  bottom: 15%;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-180px) scale(1.05);
 }
 
-/* notif */
-.notif{
-  margin-top:18px;
-  color:white;
-  font-size:1.1rem;
-  animation:pulse 2s infinite;
+.notif {
+  margin-top: 18px;
+  color: white;
+  font-size: 1.1rem;
+  animation: pulse 2s infinite;
 }
 
-/* contenu */
-#content{
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  color:white;
+/* CONTENU */
+#content {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1s ease forwards;
 }
 
-/* ✅ TITRE — corrigé */
-h1{
-  color:white;
-  text-align:center;
-  font-size:clamp(1.4rem,4.2vw,2.2rem);
-  margin:18px 0;
-  line-height:1.2;
+h1 {
+  color: white;
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  margin: 20px 0;
+  text-shadow: 0 0 18px rgba(255,200,230,0.95);
 }
 
-img.main{
-  width:260px;
-  animation:float 3s ease-in-out infinite;
+img.main {
+  width: min(75vw, 280px);
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
 }
 
-button{
-  padding:1rem 2rem;
-  font-size:1.2rem;
-  margin:10px;
-  border:none;
-  border-radius:16px;
-  cursor:pointer;
+button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  margin: 10px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
 }
 
-#yesBtn{background:#ff5f9e;color:white}
-#noBtn{background:#4facfe;color:white}
-
-#result{display:none;margin-top:20px}
-
-/* canvas feu */
-canvas{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
+#yesBtn {
+  background-color: #ff5f9e;
+  color: white;
+  box-shadow: 0 0 20px rgba(255,95,158,0.9);
 }
 
-/* anim */
-@keyframes pulse{
-  50%{transform:scale(1.08)}
+#noBtn {
+  background-color: #4facfe;
+  color: white;
 }
-@keyframes float{
-  50%{transform:translateY(-12px)}
+
+#result {
+  display: none;
+  margin-top: 30px;
+  color: white;
+  animation: pop 0.6s ease;
+}
+
+/* canvas feu artifice */
+canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* animations */
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 </style>
 </head>
@@ -170,109 +188,116 @@ canvas{
 <div class="letter-overlay" id="overlay">
   <div class="envelope-wrapper" onclick="openLetterStep()">
     <div class="envelope" id="envelope">
-      <div class="env-body"></div>
-      <div class="paper"></div>
-      <div class="env-front"></div>
       <div class="flap"></div>
+      <div class="paper"></div>
     </div>
     <div class="notif">Vous avez un nouveau message</div>
   </div>
 </div>
 
 <div id="content">
-<img class="main" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+<img class="main"
+src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
 <h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
 
 <div id="buttons">
-<button id="yesBtn" onclick="yesClick()">Oui 💕</button>
-<button id="noBtn" onclick="noClick()">Non</button>
+  <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
+  <button id="noBtn" onclick="noClick()">Non</button>
 </div>
 
-<div id="result"><h1>Ah ba quand même 🙂</h1></div>
+<div id="result">
+  <h1>Ah ba quand même 🙂</h1>
+</div>
 </div>
 
 <canvas id="fw"></canvas>
 
 <script>
-let step=0;
-function openLetterStep(){
-  step++;
-  envelope.classList.toggle("tilt-left",step%2);
-  envelope.classList.toggle("tilt-right",!(step%2));
-  if(step>=5){
-    envelope.classList.add("open");
+/* ouverture enveloppe */
+let clickStep = 0;
+function openLetterStep() {
+  const env = envelope;
+  clickStep++;
+  env.classList.toggle("tilt-left", clickStep%2);
+  env.classList.toggle("tilt-right", !(clickStep%2));
+
+  if (clickStep >= 5) {
+    env.classList.add("open");
     setTimeout(()=>{
       overlay.style.display="none";
       content.style.display="flex";
-    },1600);
+    },1500);
   }
 }
 
 /* boutons */
-let noTexts=["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance"];
+let noTexts=["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
 let noCount=0, yesSize=1.2, noSize=1.2;
 
 function noClick(){
-  noBtn.innerText=noTexts[++noCount%noTexts.length];
+  noCount++;
+  noBtn.innerText=noTexts[noCount%noTexts.length];
   yesBtn.style.fontSize=(yesSize+=0.3)+"rem";
-  noBtn.style.fontSize=Math.max(.6,(noSize-=.1))+"rem";
+  noBtn.style.fontSize=Math.max(0.6,(noSize-=0.1))+"rem";
 }
 
 function yesClick(){
   buttons.style.display="none";
   result.style.display="block";
-  fireworksRunning=true;
+  launchFireworks();
 }
 
-/* 🎆 feu d’artifice continu */
-const canvas=document.getElementById("fw");
-const ctx=canvas.getContext("2d");
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-resize(); onresize=resize;
+/* 🎆 FEU D’ARTIFICE ROSE/ROUGE */
+const canvas = document.getElementById("fw");
+const ctx = canvas.getContext("2d");
+resize();
+window.onresize = resize;
 
-const colors=["#ff2d55","#ff4fa3","#ff6fae","#ff1744"];
-const parts=[];
-let fireworksRunning=false;
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
 
-function spawnBurst(){
-  const x=Math.random()*canvas.width;
-  const y=Math.random()*canvas.height*0.6;
-  for(let i=0;i<80;i++){
-    parts.push({
+function launchFireworks(){
+  for(let i=0;i<6;i++){
+    setTimeout(()=>burst(Math.random()*canvas.width, Math.random()*canvas.height*0.6), i*250);
+  }
+}
+
+function burst(x,y){
+  const colors=["#ff2d55","#ff4fa3","#ff6fae","#ff1744"];
+  for(let i=0;i<70;i++){
+    particles.push({
       x,y,
-      vx:(Math.random()-0.5)*7,
-      vy:(Math.random()-0.5)*7,
-      life:70,
-      c:colors[Math.random()*colors.length|0]
+      vx:(Math.random()-0.5)*6,
+      vy:(Math.random()-0.5)*6,
+      life:60,
+      color:colors[Math.floor(Math.random()*colors.length)]
     });
   }
 }
 
-function loop(){
+const particles=[];
+
+function tick(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  if(fireworksRunning && Math.random()<0.08){
-    spawnBurst();
-  }
-
-  for(let i=parts.length-1;i>=0;i--){
-    const p=parts[i];
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
     p.x+=p.vx;
     p.y+=p.vy;
-    p.vy+=0.06;
+    p.vy+=0.05;
     p.life--;
 
-    ctx.globalAlpha=p.life/70;
-    ctx.fillStyle=p.c;
+    ctx.globalAlpha=p.life/60;
+    ctx.fillStyle=p.color;
     ctx.fillRect(p.x,p.y,3,3);
 
-    if(p.life<=0) parts.splice(i,1);
+    if(p.life<=0) particles.splice(i,1);
   }
-
-  requestAnimationFrame(loop);
+  requestAnimationFrame(tick);
 }
-loop();
+tick();
 </script>
 
 </body>
