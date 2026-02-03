@@ -52,23 +52,17 @@ body {
   border-radius: 12px;
   box-shadow: 0 25px 50px rgba(0,0,0,0.35);
   transform-style: preserve-3d;
-
-  /* ✅ AJOUTÉ : profondeur pour l’animation du rabat */
   perspective: 1000px;
-
   transition: transform 0.4s ease;
   overflow: hidden;
 }
 
-/* bascule gauche / droite */
 .envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
 .envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
 
-/* ✅ RABAT — VERSION MODIFIÉE */
+/* rabat */
 .flap {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(#ffb3cf, #ff8fbe);
@@ -77,17 +71,14 @@ body {
   transform: rotateX(0deg);
   transition: transform 0.9s cubic-bezier(.22,1,.36,1);
   z-index: 4;
-
   backface-visibility: hidden;
-  box-shadow: inset 0 -12px 20px rgba(0,0,0,0.15);
 }
 
-/* ✅ OUVERTURE RABAT — MODIFIÉ */
 .envelope.open .flap {
   transform: rotateX(175deg);
 }
 
-/* PAPIER */
+/* papier */
 .paper {
   position: absolute;
   left: 50%;
@@ -108,12 +99,10 @@ body {
   transform: translateX(-50%) translateY(-180px) scale(1.05);
 }
 
-/* notif */
 .notif {
   margin-top: 18px;
   color: white;
   font-size: 1.1rem;
-  opacity: 0.95;
   animation: pulse 2s infinite;
 }
 
@@ -138,8 +127,6 @@ img.main {
   animation: float 3s ease-in-out infinite;
 }
 
-#buttons { margin-top: 20px; }
-
 button {
   padding: 1rem 2rem;
   font-size: 1.2rem;
@@ -147,7 +134,6 @@ button {
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 #yesBtn {
@@ -155,8 +141,6 @@ button {
   color: white;
   box-shadow: 0 0 20px rgba(255,95,158,0.9);
 }
-
-#yesBtn:hover { transform: scale(1.2); }
 
 #noBtn {
   background-color: #4facfe;
@@ -170,25 +154,11 @@ button {
   animation: pop 0.6s ease;
 }
 
-/* étoiles */
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.8;
-  animation: twinkle 3s infinite ease-in-out;
-}
-
-.shooting-star {
-  position: absolute;
-  width: 120px;
-  height: 2px;
-  background: linear-gradient(90deg, white, transparent);
-  opacity: 0.8;
-  transform: rotate(-45deg);
-  animation: shoot 1.2s ease-out forwards;
+/* canvas feu artifice */
+canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
 }
 
 /* animations */
@@ -203,26 +173,12 @@ button {
 }
 
 @keyframes float {
-  0% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
-  100% { transform: translateY(0); }
 }
 
 @keyframes pop {
   from { transform: scale(0.6); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes twinkle {
-  0%,100% { opacity: 0.2; }
-  50% { opacity: 1; }
-}
-
-@keyframes shoot {
-  to {
-    transform: translate(-600px, 600px) rotate(-45deg);
-    opacity: 0;
-  }
 }
 </style>
 </head>
@@ -255,60 +211,93 @@ src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 </div>
 </div>
 
+<canvas id="fw"></canvas>
+
 <script>
+/* ouverture enveloppe */
 let clickStep = 0;
 function openLetterStep() {
-  const env = document.getElementById("envelope");
+  const env = envelope;
   clickStep++;
-
-  env.classList.remove("tilt-left","tilt-right");
-  env.classList.add(clickStep % 2 ? "tilt-left" : "tilt-right");
+  env.classList.toggle("tilt-left", clickStep%2);
+  env.classList.toggle("tilt-right", !(clickStep%2));
 
   if (clickStep >= 5) {
     env.classList.add("open");
-    setTimeout(() => {
-      overlay.style.display = "none";
-      content.style.display = "flex";
-    }, 1500);
+    setTimeout(()=>{
+      overlay.style.display="none";
+      content.style.display="flex";
+    },1500);
   }
 }
 
-/* étoiles */
-for (let i = 0; i < 120; i++) {
-  const star = document.createElement("div");
-  star.className = "star";
-  star.style.left = Math.random() * 100 + "vw";
-  star.style.top = Math.random() * 100 + "vh";
-  document.body.appendChild(star);
-}
-
-/* shooting */
-function shooting() {
-  const s = document.createElement("div");
-  s.className = "shooting-star";
-  s.style.top = Math.random() * 40 + "vh";
-  s.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(s);
-  setTimeout(() => s.remove(), 1200);
-  setTimeout(shooting, Math.random() * 3000 + 4000);
-}
-shooting();
-
 /* boutons */
-let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
-let noCount = 0, yesSize = 1.2, noSize = 1.2;
+let noTexts=["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
+let noCount=0, yesSize=1.2, noSize=1.2;
 
-function noClick() {
+function noClick(){
   noCount++;
-  noBtn.innerText = noTexts[noCount % noTexts.length];
-  yesBtn.style.fontSize = (yesSize += 0.3) + "rem";
-  noBtn.style.fontSize = Math.max(0.6, (noSize -= 0.1)) + "rem";
+  noBtn.innerText=noTexts[noCount%noTexts.length];
+  yesBtn.style.fontSize=(yesSize+=0.3)+"rem";
+  noBtn.style.fontSize=Math.max(0.6,(noSize-=0.1))+"rem";
 }
 
-function yesClick() {
-  buttons.style.display = "none";
-  result.style.display = "block";
+function yesClick(){
+  buttons.style.display="none";
+  result.style.display="block";
+  launchFireworks();
 }
+
+/* 🎆 FEU D’ARTIFICE ROSE/ROUGE */
+const canvas = document.getElementById("fw");
+const ctx = canvas.getContext("2d");
+resize();
+window.onresize = resize;
+
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+
+function launchFireworks(){
+  for(let i=0;i<6;i++){
+    setTimeout(()=>burst(Math.random()*canvas.width, Math.random()*canvas.height*0.6), i*250);
+  }
+}
+
+function burst(x,y){
+  const colors=["#ff2d55","#ff4fa3","#ff6fae","#ff1744"];
+  for(let i=0;i<70;i++){
+    particles.push({
+      x,y,
+      vx:(Math.random()-0.5)*6,
+      vy:(Math.random()-0.5)*6,
+      life:60,
+      color:colors[Math.floor(Math.random()*colors.length)]
+    });
+  }
+}
+
+const particles=[];
+
+function tick(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.vy+=0.05;
+    p.life--;
+
+    ctx.globalAlpha=p.life/60;
+    ctx.fillStyle=p.color;
+    ctx.fillRect(p.x,p.y,3,3);
+
+    if(p.life<=0) particles.splice(i,1);
+  }
+  requestAnimationFrame(tick);
+}
+tick();
 </script>
 
 </body>
