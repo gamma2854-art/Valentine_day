@@ -12,7 +12,6 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 20px;
-  text-align: center;
   font-family: Arial, sans-serif;
   background:
     radial-gradient(circle at top, #5f9cff, #2b4a9a 35%, #0b1026 75%),
@@ -24,7 +23,7 @@ body {
 }
 
 /* ===================== */
-/* 💌 OVERLAY LETTRE */
+/* OVERLAY */
 /* ===================== */
 .letter-overlay {
   position: fixed;
@@ -36,17 +35,24 @@ body {
   z-index: 9999;
 }
 
-/* ✉️ ENVELOPPE */
-.mail-envelope {
+/* ===================== */
+/* ENVELOPPE 💌 (CSS) */
+/* ===================== */
+.envelope {
   position: relative;
-  width: 380px;
-  height: 250px;
+  width: 360px;
+  height: 240px;
   cursor: pointer;
   perspective: 1000px;
+  transition: transform 0.25s ease;
 }
 
-/* FOND */
-.env-back {
+/* BALANCEMENT */
+.swing-left { transform: rotate(-8deg); }
+.swing-right { transform: rotate(8deg); }
+
+/* CORPS */
+.envelope-body {
   position: absolute;
   inset: 0;
   background: #ff5f9e;
@@ -54,28 +60,17 @@ body {
   z-index: 1;
 }
 
-/* VOLETS */
-.env-left, .env-right {
+/* TRIANGLE CENTRAL (comme 💌) */
+.envelope-center {
   position: absolute;
-  width: 50%;
-  height: 100%;
-  background: #ff78b8;
-  top: 0;
+  inset: 0;
+  background: #ff7ab8;
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
   z-index: 2;
 }
 
-.env-left {
-  left: 0;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-
-.env-right {
-  right: 0;
-  clip-path: polygon(100% 0, 100% 100%, 0 50%);
-}
-
-/* RABAT */
-.env-top {
+/* RABAT HAUT */
+.envelope-flap {
   position: absolute;
   inset: 0;
   background: linear-gradient(145deg, #ff9acb, #ff5f9e);
@@ -85,44 +80,22 @@ body {
   z-index: 4;
 }
 
-/* 💌 LETTRE */
-.letter {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14rem;
-  z-index: 5;
-  transition: transform 0.25s ease, opacity 0.8s ease;
-}
-
-/* BALANCEMENT */
-.swing-left { transform: rotate(-12deg) scale(1.05); }
-.swing-right { transform: rotate(12deg) scale(1.05); }
-
 /* OUVERTURE */
-.open-flap {
+.envelope.open .envelope-flap {
   transform: rotateX(180deg);
 }
 
-.letter.open {
-  transform: scale(2.5);
-  opacity: 0;
-}
-
 /* ===================== */
-/* 🌟 CONTENU */
+/* CONTENU */
 /* ===================== */
 #content {
   display: none;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
+  color: white;
   animation: fadeIn 1s ease forwards;
 }
 
 h1 {
-  color: white;
   text-shadow: 0 0 18px rgba(255,200,230,0.95);
 }
 
@@ -150,6 +123,7 @@ button {
   color: white;
 }
 
+/* ANIMS */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -166,12 +140,10 @@ button {
 
 <!-- 💌 INTRO -->
 <div class="letter-overlay" id="overlay">
-  <div class="mail-envelope" onclick="openLetter()">
-    <div class="env-back"></div>
-    <div class="env-left"></div>
-    <div class="env-right"></div>
-    <div class="env-top" id="envTop"></div>
-    <div class="letter" id="mainLetter">💌</div>
+  <div class="envelope" id="envelope" onclick="openLetter()">
+    <div class="envelope-body"></div>
+    <div class="envelope-center"></div>
+    <div class="envelope-flap"></div>
   </div>
 </div>
 
@@ -196,27 +168,22 @@ let swing = false;
 const maxClicks = 5;
 
 function openLetter() {
-  const letter = document.getElementById("mainLetter");
-  const flap = document.getElementById("envTop");
-
+  const env = document.getElementById("envelope");
   clicks++;
 
-  letter.classList.remove("swing-left", "swing-right");
-  letter.classList.add(swing ? "swing-left" : "swing-right");
+  env.classList.remove("swing-left","swing-right");
+  env.classList.add(swing ? "swing-left" : "swing-right");
   swing = !swing;
 
   if (clicks >= maxClicks) {
-    flap.classList.add("open-flap");
-    letter.classList.add("open");
-
+    env.classList.add("open");
     setTimeout(() => {
       document.getElementById("overlay").style.display = "none";
-      document.getElementById("content").style.display = "flex";
+      document.getElementById("content").style.display = "block";
     }, 1000);
   }
 }
 
-/* BOUTONS */
 let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance ❤️"];
 let noCount = 0;
 
