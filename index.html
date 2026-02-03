@@ -12,6 +12,7 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 20px;
+  text-align: center;
   font-family: Arial, sans-serif;
   background:
     radial-gradient(circle at top, #5f9cff, #2b4a9a 35%, #0b1026 75%),
@@ -22,9 +23,7 @@ body {
   overflow: hidden;
 }
 
-/* ===================== */
-/* OVERLAY */
-/* ===================== */
+/* 💌 OVERLAY LETTRE */
 .letter-overlay {
   position: fixed;
   inset: 0;
@@ -33,162 +32,184 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  animation: fadeIn 1s ease;
 }
 
-/* ===================== */
-/* ENVELOPPE 💌 (CSS) */
-/* ===================== */
-.envelope {
+/* CONTENEUR */
+.letter-wrapper {
   position: relative;
-  width: 360px;
-  height: 240px;
-  cursor: pointer;
-  perspective: 1000px;
-  transition: transform 0.25s ease;
+  width: 200px;
+  height: 200px;
 }
 
-/* BALANCEMENT */
-.swing-left { transform: rotate(-8deg); }
-.swing-right { transform: rotate(8deg); }
-
-/* CORPS */
-.envelope-body {
+/* FEUILLE DE PAPIER */
+.paper {
   position: absolute;
-  inset: 0;
-  background: #ff5f9e;
-  border-radius: 18px;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  width: 160px;
+  height: 200px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transition: transform 0.8s ease;
   z-index: 1;
 }
 
-/* TRIANGLE CENTRAL (comme 💌) */
-.envelope-center {
-  position: absolute;
-  inset: 0;
-  background: #ff7ab8;
-  clip-path: polygon(0 0, 100% 0, 50% 60%);
+/* EMOJI */
+.letter {
+  position: relative;
+  font-size: clamp(6rem, 20vw, 12rem);
+  cursor: pointer;
+  animation: pulse 2s infinite;
+  transition: transform 0.6s ease, opacity 0.6s ease;
   z-index: 2;
 }
 
-/* RABAT HAUT */
-.envelope-flap {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(145deg, #ff9acb, #ff5f9e);
-  clip-path: polygon(0 0, 100% 0, 50% 55%);
-  transform-origin: top;
-  transition: transform 1s ease;
-  z-index: 4;
+.letter:hover {
+  transform: scale(1.15) rotate(-3deg);
 }
 
-/* OUVERTURE */
-.envelope.open .envelope-flap {
-  transform: rotateX(180deg);
+/* ÉTAT OUVERT */
+.letter.open {
+  opacity: 0;
+  transform: scale(1.5);
 }
 
-/* ===================== */
-/* CONTENU */
-/* ===================== */
+.letter.open + .paper {
+  transform: translateX(-50%) translateY(-140px);
+}
+
+/* CONTENU CACHÉ */
 #content {
   display: none;
-  text-align: center;
-  color: white;
+  flex-direction: column;
+  align-items: center;
   animation: fadeIn 1s ease forwards;
 }
 
+/* --- TON CSS EXISTANT --- */
+
 h1 {
+  color: white;
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  margin: 20px 0;
   text-shadow: 0 0 18px rgba(255,200,230,0.95);
 }
 
 img.main {
   width: min(75vw, 280px);
+  margin-bottom: 20px;
   animation: float 3s ease-in-out infinite;
 }
+
+#buttons { margin-top: 20px; }
 
 button {
   padding: 1rem 2rem;
   font-size: 1.2rem;
   margin: 10px;
-  border-radius: 16px;
   border: none;
+  border-radius: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 #yesBtn {
-  background: #ff5f9e;
+  background-color: #ff5f9e;
   color: white;
+  box-shadow: 0 0 20px rgba(255,95,158,0.9);
 }
+
+#yesBtn:hover { transform: scale(1.2); }
 
 #noBtn {
-  background: #4facfe;
+  background-color: #4facfe;
   color: white;
 }
 
-/* ANIMS */
+#result {
+  display: none;
+  margin-top: 30px;
+  color: white;
+  animation: pop 0.6s ease;
+}
+
+/* ANIMATIONS */
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes float {
-  0%,100% { transform: translateY(0); }
+  0% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 💌 INTRO -->
+<!-- 💌 LETTRE -->
 <div class="letter-overlay" id="overlay">
-  <div class="envelope" id="envelope" onclick="openLetter()">
-    <div class="envelope-body"></div>
-    <div class="envelope-center"></div>
-    <div class="envelope-flap"></div>
+  <div class="letter-wrapper">
+    <div class="letter" onclick="openLetter()">💌</div>
+    <div class="paper"></div>
   </div>
 </div>
 
-<!-- 💖 CONTENU -->
+<!-- 🌟 CONTENU -->
 <div id="content">
-  <img class="main" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
-  <h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
 
-  <div id="buttons">
-    <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
-    <button id="noBtn" onclick="noClick()">Non</button>
-  </div>
+<img class="main"
+src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
-  <div id="result" style="display:none">
-    <h1>Ah ba quand même 🙂</h1>
-  </div>
+<h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
+
+<div id="buttons">
+  <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
+  <button id="noBtn" onclick="noClick()">Non</button>
+</div>
+
+<div id="result">
+  <h1>Ah ba quand même 🙂</h1>
+</div>
+
 </div>
 
 <script>
-let clicks = 0;
-let swing = false;
-const maxClicks = 5;
-
+/* 💌 OUVERTURE LETTRE */
 function openLetter() {
-  const env = document.getElementById("envelope");
-  clicks++;
+  const letter = document.querySelector(".letter");
+  letter.classList.add("open");
 
-  env.classList.remove("swing-left","swing-right");
-  env.classList.add(swing ? "swing-left" : "swing-right");
-  swing = !swing;
-
-  if (clicks >= maxClicks) {
-    env.classList.add("open");
-    setTimeout(() => {
-      document.getElementById("overlay").style.display = "none";
-      document.getElementById("content").style.display = "block";
-    }, 1000);
-  }
+  setTimeout(() => {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("content").style.display = "flex";
+  }, 900);
 }
 
-let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance ❤️"];
-let noCount = 0;
+/* LOGIQUE BOUTONS */
+let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
+let noCount = 0, yesSize = 1.2, noSize = 1.2;
 
 function noClick() {
-  noBtn.innerText = noTexts[++noCount % noTexts.length];
+  noCount++;
+  noBtn.innerText = noTexts[noCount % noTexts.length];
+  yesBtn.style.fontSize = (yesSize += 0.3) + "rem";
+  noBtn.style.fontSize = Math.max(0.6, (noSize -= 0.1)) + "rem";
 }
 
 function yesClick() {
