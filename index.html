@@ -23,7 +23,7 @@ body {
   overflow: hidden;
 }
 
-/* 💌 OVERLAY LETTRE */
+/* 💌 OVERLAY */
 .letter-overlay {
   position: fixed;
   inset: 0;
@@ -35,61 +35,85 @@ body {
   animation: fadeIn 1s ease;
 }
 
-/* CONTENEUR */
-.letter-wrapper {
-  position: relative;
-  width: 200px;
-  height: 200px;
+/* ✉️ ENVELOPPE */
+.envelope-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  perspective: 900px;
 }
 
-/* FEUILLE DE PAPIER */
+.envelope {
+  position: relative;
+  width: clamp(260px, 45vw, 360px);
+  height: clamp(180px, 30vw, 240px);
+  background: linear-gradient(#ffd6e7, #ff9fc5);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+}
+
+/* bascule gauche droite */
+.envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
+.envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
+
+/* rabat */
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#ffb3cf, #ff8fbe);
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: top;
+  transition: transform 0.8s ease;
+  z-index: 3;
+  border-radius: 12px;
+}
+
+/* ouverture rabat */
+.envelope.open .flap {
+  transform: rotateX(160deg);
+}
+
+/* feuille qui sort */
 .paper {
   position: absolute;
-  bottom: 40px;
   left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  width: 160px;
-  height: 200px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  transition: transform 0.8s ease;
-  z-index: 1;
-}
-
-/* EMOJI */
-.letter {
-  position: relative;
-  font-size: clamp(6rem, 20vw, 12rem);
-  cursor: pointer;
-  animation: pulse 2s infinite;
-  transition: transform 0.6s ease, opacity 0.6s ease;
+  bottom: 10px;
+  width: 70%;
+  height: 85%;
+  background: white;
+  border-radius: 8px;
+  transform: translateX(-50%) translateY(40px);
+  transition: transform 1s ease, opacity 1s ease;
   z-index: 2;
 }
 
-.letter:hover {
-  transform: scale(1.15) rotate(-3deg);
-}
-
-/* ÉTAT OUVERT */
-.letter.open {
+.envelope.open .paper {
+  transform: translateX(-50%) translateY(-220px) scale(1.1);
   opacity: 0;
-  transform: scale(1.5);
 }
 
-.letter.open + .paper {
-  transform: translateX(-50%) translateY(-140px);
+/* notif */
+.notif {
+  margin-top: 18px;
+  color: white;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  animation: pulse 2s infinite;
 }
 
-/* CONTENU CACHÉ */
+/* CONTENU */
 #content {
   display: none;
   flex-direction: column;
   align-items: center;
   animation: fadeIn 1s ease forwards;
 }
-
-/* --- TON CSS EXISTANT --- */
 
 h1 {
   color: white;
@@ -136,7 +160,28 @@ button {
   animation: pop 0.6s ease;
 }
 
-/* ANIMATIONS */
+/* étoiles */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.shooting-star {
+  position: absolute;
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(90deg, white, transparent);
+  opacity: 0.8;
+  transform: rotate(-45deg);
+  animation: shoot 1.2s ease-out forwards;
+}
+
+/* animations */
 @keyframes pulse {
   0%,100% { transform: scale(1); }
   50% { transform: scale(1.08); }
@@ -157,20 +202,35 @@ button {
   from { transform: scale(0.6); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+@keyframes twinkle {
+  0%,100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+@keyframes shoot {
+  to {
+    transform: translate(-600px, 600px) rotate(-45deg);
+    opacity: 0;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<!-- 💌 LETTRE -->
+<!-- ✉️ ENVELOPPE -->
 <div class="letter-overlay" id="overlay">
-  <div class="letter-wrapper">
-    <div class="letter" onclick="openLetter()">💌</div>
-    <div class="paper"></div>
+  <div class="envelope-wrapper" onclick="openLetterStep()">
+    <div class="envelope" id="envelope">
+      <div class="flap"></div>
+      <div class="paper"></div>
+    </div>
+    <div class="notif">Vous avez un nouveau message</div>
   </div>
 </div>
 
-<!-- 🌟 CONTENU -->
+<!-- CONTENU -->
 <div id="content">
 
 <img class="main"
@@ -190,18 +250,47 @@ src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 </div>
 
 <script>
-/* 💌 OUVERTURE LETTRE */
-function openLetter() {
-  const letter = document.querySelector(".letter");
-  letter.classList.add("open");
+/* ouverture multi-clic */
+let clickStep = 0;
+function openLetterStep() {
+  const env = document.getElementById("envelope");
+  clickStep++;
 
-  setTimeout(() => {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("content").style.display = "flex";
-  }, 900);
+  env.classList.remove("tilt-left","tilt-right");
+  env.classList.add(clickStep % 2 ? "tilt-left" : "tilt-right");
+
+  if (clickStep >= 5) {
+    env.classList.add("open");
+    setTimeout(() => {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("content").style.display = "flex";
+    }, 1200);
+  }
 }
 
-/* LOGIQUE BOUTONS */
+/* étoiles */
+for (let i = 0; i < 120; i++) {
+  const star = document.createElement("div");
+  star.className = "star";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.top = Math.random() * 100 + "vh";
+  star.style.animationDelay = Math.random() * 3 + "s";
+  document.body.appendChild(star);
+}
+
+/* étoiles filantes */
+function shooting() {
+  const s = document.createElement("div");
+  s.className = "shooting-star";
+  s.style.top = Math.random() * 40 + "vh";
+  s.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 1200);
+  setTimeout(shooting, Math.random() * 3000 + 4000);
+}
+shooting();
+
+/* boutons */
 let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
 let noCount = 0, yesSize = 1.2, noSize = 1.2;
 
