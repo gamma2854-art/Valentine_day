@@ -73,7 +73,6 @@ body {
   overflow: hidden;
 }
 
-/* devant enveloppe */
 .env-body{
   position:absolute;
   inset:0;
@@ -89,34 +88,7 @@ body {
   z-index:3;
 }
 
-/* ❤️ coeur ajouté */
-.env-heart{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size: clamp(42px, 6vw, 64px);
-  z-index:2;
-  pointer-events:none;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
-  animation: heartPulse 2s infinite;
-}
-
-@keyframes heartPulse{
-  0%,100%{ transform:scale(1); }
-  50%{ transform:scale(1.15); }
-}
-
-.envelope.open .env-heart{
-  opacity:0;
-  transition: opacity .4s ease;
-}
-
-.envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
-.envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
-
-/* rabat — ouverture réaliste */
+/* rabat réaliste */
 .flap {
   position: absolute;
   width: 100%;
@@ -135,7 +107,7 @@ body {
   z-index: 0;
 }
 
-/* papier amélioré */
+/* papier */
 .paper {
   position: absolute;
   left: 50%;
@@ -149,6 +121,9 @@ body {
   z-index: 2;
   opacity: 0;
   box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .envelope.open .paper {
@@ -156,6 +131,21 @@ body {
   opacity: 1;
   transform: translateX(-50%) translateY(-140px) scale(1);
 }
+
+/* ❤️ cœur maintenant sur la feuille */
+.paper-heart{
+  font-size: clamp(42px, 6vw, 64px);
+  animation: heartPulse 2s infinite;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+}
+
+@keyframes heartPulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.15); }
+}
+
+.envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
+.envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
 
 .notif {
   margin-top: 18px;
@@ -221,7 +211,6 @@ canvas {
   z-index: 1;
 }
 
-/* animations */
 @keyframes pulse {
   0%,100% { transform: scale(1); }
   50% { transform: scale(1.08); }
@@ -249,8 +238,11 @@ canvas {
   <div class="envelope-wrapper" onclick="openLetterStep()">
     <div class="envelope" id="envelope">
       <div class="env-body"></div>
-      <div class="env-heart">❤️</div>
-      <div class="paper"></div>
+
+      <div class="paper">
+        <div class="paper-heart">❤️</div>
+      </div>
+
       <div class="env-front"></div>
       <div class="flap"></div>
     </div>
