@@ -9,21 +9,15 @@
 * { box-sizing: border-box; }
 
 body {
-  min-height: 100vh;
   margin: 0;
-  padding: 20px;
-  text-align: center;
-  font-family: Arial, sans-serif;
+  min-height: 100vh;
   background:
-    radial-gradient(circle at top, #5f9cff, #2b4a9a 35%, #0b1026 75%),
-    linear-gradient(180deg, #ff9a9e, #fad0c4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    radial-gradient(circle at top, #5f9cff, #2b4a9a 35%, #0b1026 75%);
+  font-family: Arial, sans-serif;
   overflow: hidden;
 }
 
-/* 💌 OVERLAY LETTRE */
+/* 💌 OVERLAY */
 .letter-overlay {
   position: fixed;
   inset: 0;
@@ -32,226 +26,170 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeIn 1s ease;
 }
 
-.letter {
-  font-size: clamp(6rem, 20vw, 12rem);
+/* 💌 ENVELOPPE */
+.envelope {
+  position: relative;
+  width: 320px;
+  height: 220px;
   cursor: pointer;
-  animation: pulse 2s infinite;
-  transition: transform 0.6s ease, opacity 0.6s ease;
 }
 
-.letter:hover {
-  transform: scale(1.15) rotate(-3deg);
+.flap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #ff7eb3, #ff4f91);
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: top;
+  transition: transform 1s ease;
+  z-index: 3;
 }
 
+.envelope.open .flap {
+  transform: rotateX(180deg);
+}
+
+.body {
+  position: absolute;
+  inset: 0;
+  background: #ff5f9e;
+  border-radius: 0 0 12px 12px;
+  z-index: 1;
+}
+
+/* 💌 LETTRE */
+.letter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11rem;
+  transform-origin: center;
+  transition: transform 0.3s ease;
+  z-index: 2;
+}
+
+/* BALANCEMENT */
+.swing-left { transform: rotate(-12deg) scale(1.03); }
+.swing-right { transform: rotate(12deg) scale(1.03); }
+
+/* OUVERTURE FINALE */
 .letter.open {
-  transform: scale(3);
+  transform: scale(2.5);
   opacity: 0;
+  transition: transform 0.8s ease, opacity 0.8s ease;
 }
 
-/* CONTENU CACHÉ AU DÉBUT */
+/* 🌟 CONTENU */
 #content {
   display: none;
-  flex-direction: column;
-  align-items: center;
-  animation: fadeIn 1s ease forwards;
+  min-height: 100vh;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  animation: fadeIn 1.2s ease forwards;
 }
 
-/* --- TON CSS EXISTANT --- */
-
 h1 {
-  color: white;
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  margin: 20px 0;
   text-shadow: 0 0 18px rgba(255,200,230,0.95);
 }
 
 img.main {
   width: min(75vw, 280px);
-  margin-bottom: 20px;
   animation: float 3s ease-in-out infinite;
 }
-
-#buttons { margin-top: 20px; }
 
 button {
   padding: 1rem 2rem;
   font-size: 1.2rem;
   margin: 10px;
-  border: none;
   border-radius: 16px;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 #yesBtn {
-  background-color: #ff5f9e;
+  background: #ff5f9e;
   color: white;
-  box-shadow: 0 0 20px rgba(255,95,158,0.9);
 }
-
-#yesBtn:hover { transform: scale(1.2); }
 
 #noBtn {
-  background-color: #4facfe;
+  background: #4facfe;
   color: white;
 }
 
-#result {
-  display: none;
-  margin-top: 30px;
-  color: white;
-  animation: pop 0.6s ease;
-}
-
-/* ÉTOILES */
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.8;
-  animation: twinkle 3s infinite ease-in-out;
-}
-
-.shooting-star {
-  position: absolute;
-  width: 120px;
-  height: 2px;
-  background: linear-gradient(90deg, white, transparent);
-  opacity: 0.8;
-  transform: rotate(-45deg);
-  animation: shoot 1.2s ease-out forwards;
-}
-
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.heart {
-  position: absolute;
-  bottom: -30px;
-  font-size: 1.3rem;
-  opacity: 0.7;
-  animation: hearts 6s linear infinite;
-}
-
-/* ANIMATIONS */
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-
+/* ANIMS */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes float {
-  0% { transform: translateY(0); }
+  0%,100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes pop {
-  from { transform: scale(0.6); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes hearts {
-  from { transform: translateY(0); opacity: 0.8; }
-  to { transform: translateY(-120vh); opacity: 0; }
-}
-
-@keyframes twinkle {
-  0%,100% { opacity: 0.2; }
-  50% { opacity: 1; }
-}
-
-@keyframes shoot {
-  to {
-    transform: translate(-600px, 600px) rotate(-45deg);
-    opacity: 0;
-  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 💌 LETTRE -->
+<!-- 💌 INTRO -->
 <div class="letter-overlay" id="overlay">
-  <div class="letter" onclick="openLetter()">💌</div>
+  <div class="envelope" onclick="unlockLetter()">
+    <div class="flap"></div>
+    <div class="body"></div>
+    <div class="letter" id="letter">💌</div>
+  </div>
 </div>
 
-<!-- 🌟 CONTENU -->
+<!-- 💖 CONTENU -->
 <div id="content">
+  <img class="main" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+  <h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
 
-<img class="main"
-src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+  <div id="buttons">
+    <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
+    <button id="noBtn" onclick="noClick()">Non</button>
+  </div>
 
-<h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
-
-<div id="buttons">
-  <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
-  <button id="noBtn" onclick="noClick()">Non</button>
-</div>
-
-<div id="result">
-  <h1>Ah ba quand même 🙂</h1>
-</div>
-
-<canvas id="fireworks"></canvas>
+  <div id="result" style="display:none">
+    <h1>Ah ba quand même 🙂</h1>
+  </div>
 </div>
 
 <script>
-/* 💌 OUVERTURE LETTRE */
-function openLetter() {
-  const letter = document.querySelector(".letter");
-  letter.classList.add("open");
-  setTimeout(() => {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("content").style.display = "flex";
-  }, 600);
+let clicks = 0;
+let swing = false;
+
+function unlockLetter() {
+  clicks++;
+  const letter = document.getElementById("letter");
+  const envelope = document.querySelector(".envelope");
+
+  letter.classList.remove("swing-left","swing-right");
+  letter.classList.add(swing ? "swing-left" : "swing-right");
+  swing = !swing;
+
+  if (clicks >= 5) {
+    envelope.classList.add("open");
+    letter.classList.add("open");
+    setTimeout(() => {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    }, 900);
+  }
 }
 
-/* ⭐ ÉTOILES */
-for (let i = 0; i < 120; i++) {
-  const star = document.createElement("div");
-  star.className = "star";
-  star.style.left = Math.random() * 100 + "vw";
-  star.style.top = Math.random() * 100 + "vh";
-  star.style.animationDelay = Math.random() * 3 + "s";
-  document.body.appendChild(star);
-}
-
-/* 🌠 ÉTOILES FILANTES */
-function shooting() {
-  const s = document.createElement("div");
-  s.className = "shooting-star";
-  s.style.top = Math.random() * 40 + "vh";
-  s.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(s);
-  setTimeout(() => s.remove(), 1200);
-  setTimeout(shooting, Math.random() * 3000 + 4000);
-}
-shooting();
-
-/* LOGIQUE BOUTONS */
-let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
-let noCount = 0, yesSize = 1.2, noSize = 1.2;
+/* BOUTONS */
+let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance ❤️"];
+let noCount = 0;
 
 function noClick() {
-  noCount++;
-  noBtn.innerText = noTexts[noCount % noTexts.length];
-  yesBtn.style.fontSize = (yesSize += 0.3) + "rem";
-  noBtn.style.fontSize = Math.max(0.6, (noSize -= 0.1)) + "rem";
+  noBtn.innerText = noTexts[++noCount % noTexts.length];
+  yesBtn.style.transform = "scale(1.2)";
 }
 
 function yesClick() {
