@@ -23,7 +23,9 @@ body {
   overflow: hidden;
 }
 
+/* ===================== */
 /* 💌 OVERLAY LETTRE */
+/* ===================== */
 .letter-overlay {
   position: fixed;
   inset: 0;
@@ -32,26 +34,86 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeIn 1s ease;
 }
 
-.letter {
-  font-size: clamp(6rem, 20vw, 12rem);
+/* ✉️ ENVELOPPE */
+.mail-envelope {
+  position: relative;
+  width: 380px;
+  height: 250px;
   cursor: pointer;
-  animation: pulse 2s infinite;
-  transition: transform 0.6s ease, opacity 0.6s ease;
+  perspective: 1000px;
 }
 
-.letter:hover {
-  transform: scale(1.15) rotate(-3deg);
+/* FOND */
+.env-back {
+  position: absolute;
+  inset: 0;
+  background: #ff5f9e;
+  border-radius: 18px;
+  z-index: 1;
+}
+
+/* VOLETS */
+.env-left, .env-right {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  background: #ff78b8;
+  top: 0;
+  z-index: 2;
+}
+
+.env-left {
+  left: 0;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.env-right {
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 50%);
+}
+
+/* RABAT */
+.env-top {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #ff9acb, #ff5f9e);
+  clip-path: polygon(0 0, 100% 0, 50% 55%);
+  transform-origin: top;
+  transition: transform 1s ease;
+  z-index: 4;
+}
+
+/* 💌 LETTRE */
+.letter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14rem;
+  z-index: 5;
+  transition: transform 0.25s ease, opacity 0.8s ease;
+}
+
+/* BALANCEMENT */
+.swing-left { transform: rotate(-12deg) scale(1.05); }
+.swing-right { transform: rotate(12deg) scale(1.05); }
+
+/* OUVERTURE */
+.open-flap {
+  transform: rotateX(180deg);
 }
 
 .letter.open {
-  transform: scale(3);
+  transform: scale(2.5);
   opacity: 0;
 }
 
-/* CONTENU CACHÉ AU DÉBUT */
+/* ===================== */
+/* 🌟 CONTENU */
+/* ===================== */
 #content {
   display: none;
   flex-direction: column;
@@ -59,93 +121,33 @@ body {
   animation: fadeIn 1s ease forwards;
 }
 
-/* --- TON CSS EXISTANT --- */
-
 h1 {
   color: white;
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  margin: 20px 0;
   text-shadow: 0 0 18px rgba(255,200,230,0.95);
 }
 
 img.main {
   width: min(75vw, 280px);
-  margin-bottom: 20px;
   animation: float 3s ease-in-out infinite;
 }
-
-#buttons { margin-top: 20px; }
 
 button {
   padding: 1rem 2rem;
   font-size: 1.2rem;
   margin: 10px;
-  border: none;
   border-radius: 16px;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 #yesBtn {
-  background-color: #ff5f9e;
+  background: #ff5f9e;
   color: white;
-  box-shadow: 0 0 20px rgba(255,95,158,0.9);
 }
-
-#yesBtn:hover { transform: scale(1.2); }
 
 #noBtn {
-  background-color: #4facfe;
+  background: #4facfe;
   color: white;
-}
-
-#result {
-  display: none;
-  margin-top: 30px;
-  color: white;
-  animation: pop 0.6s ease;
-}
-
-/* ÉTOILES */
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  opacity: 0.8;
-  animation: twinkle 3s infinite ease-in-out;
-}
-
-.shooting-star {
-  position: absolute;
-  width: 120px;
-  height: 2px;
-  background: linear-gradient(90deg, white, transparent);
-  opacity: 0.8;
-  transform: rotate(-45deg);
-  animation: shoot 1.2s ease-out forwards;
-}
-
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.heart {
-  position: absolute;
-  bottom: -30px;
-  font-size: 1.3rem;
-  opacity: 0.7;
-  animation: hearts 6s linear infinite;
-}
-
-/* ANIMATIONS */
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
 }
 
 @keyframes fadeIn {
@@ -154,104 +156,72 @@ canvas {
 }
 
 @keyframes float {
-  0% { transform: translateY(0); }
+  0%,100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes pop {
-  from { transform: scale(0.6); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes hearts {
-  from { transform: translateY(0); opacity: 0.8; }
-  to { transform: translateY(-120vh); opacity: 0; }
-}
-
-@keyframes twinkle {
-  0%,100% { opacity: 0.2; }
-  50% { opacity: 1; }
-}
-
-@keyframes shoot {
-  to {
-    transform: translate(-600px, 600px) rotate(-45deg);
-    opacity: 0;
-  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 💌 LETTRE -->
+<!-- 💌 INTRO -->
 <div class="letter-overlay" id="overlay">
-  <div class="letter" onclick="openLetter()">💌</div>
+  <div class="mail-envelope" onclick="openLetter()">
+    <div class="env-back"></div>
+    <div class="env-left"></div>
+    <div class="env-right"></div>
+    <div class="env-top" id="envTop"></div>
+    <div class="letter" id="mainLetter">💌</div>
+  </div>
 </div>
 
-<!-- 🌟 CONTENU -->
+<!-- 💖 CONTENU -->
 <div id="content">
+  <img class="main" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+  <h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
 
-<img class="main"
-src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+  <div id="buttons">
+    <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
+    <button id="noBtn" onclick="noClick()">Non</button>
+  </div>
 
-<h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
-
-<div id="buttons">
-  <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
-  <button id="noBtn" onclick="noClick()">Non</button>
-</div>
-
-<div id="result">
-  <h1>Ah ba quand même 🙂</h1>
-</div>
-
-<canvas id="fireworks"></canvas>
+  <div id="result" style="display:none">
+    <h1>Ah ba quand même 🙂</h1>
+  </div>
 </div>
 
 <script>
-/* 💌 OUVERTURE LETTRE */
+let clicks = 0;
+let swing = false;
+const maxClicks = 5;
+
 function openLetter() {
-  const letter = document.querySelector(".letter");
-  letter.classList.add("open");
-  setTimeout(() => {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("content").style.display = "flex";
-  }, 600);
+  const letter = document.getElementById("mainLetter");
+  const flap = document.getElementById("envTop");
+
+  clicks++;
+
+  letter.classList.remove("swing-left", "swing-right");
+  letter.classList.add(swing ? "swing-left" : "swing-right");
+  swing = !swing;
+
+  if (clicks >= maxClicks) {
+    flap.classList.add("open-flap");
+    letter.classList.add("open");
+
+    setTimeout(() => {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("content").style.display = "flex";
+    }, 1000);
+  }
 }
 
-/* ⭐ ÉTOILES */
-for (let i = 0; i < 120; i++) {
-  const star = document.createElement("div");
-  star.className = "star";
-  star.style.left = Math.random() * 100 + "vw";
-  star.style.top = Math.random() * 100 + "vh";
-  star.style.animationDelay = Math.random() * 3 + "s";
-  document.body.appendChild(star);
-}
-
-/* 🌠 ÉTOILES FILANTES */
-function shooting() {
-  const s = document.createElement("div");
-  s.className = "shooting-star";
-  s.style.top = Math.random() * 40 + "vh";
-  s.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(s);
-  setTimeout(() => s.remove(), 1200);
-  setTimeout(shooting, Math.random() * 3000 + 4000);
-}
-shooting();
-
-/* LOGIQUE BOUTONS */
-let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
-let noCount = 0, yesSize = 1.2, noSize = 1.2;
+/* BOUTONS */
+let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance ❤️"];
+let noCount = 0;
 
 function noClick() {
-  noCount++;
-  noBtn.innerText = noTexts[noCount % noTexts.length];
-  yesBtn.style.fontSize = (yesSize += 0.3) + "rem";
-  noBtn.style.fontSize = Math.max(0.6, (noSize -= 0.1)) + "rem";
+  noBtn.innerText = noTexts[++noCount % noTexts.length];
 }
 
 function yesClick() {
