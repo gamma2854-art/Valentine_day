@@ -52,15 +52,19 @@ body {
   border-radius: 12px;
   box-shadow: 0 25px 50px rgba(0,0,0,0.35);
   transform-style: preserve-3d;
+
+  /* ✅ AJOUTÉ : profondeur pour l’animation du rabat */
+  perspective: 1000px;
+
   transition: transform 0.4s ease;
-  overflow: hidden; /* ✅ cache le papier dedans */
+  overflow: hidden;
 }
 
-/* bascule */
+/* bascule gauche / droite */
 .envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
 .envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
 
-/* rabat */
+/* ✅ RABAT — VERSION MODIFIÉE */
 .flap {
   position: absolute;
   top: 0;
@@ -69,17 +73,21 @@ body {
   height: 100%;
   background: linear-gradient(#ffb3cf, #ff8fbe);
   clip-path: polygon(0 0, 100% 0, 50% 60%);
-  transform-origin: top;
-  transition: transform 0.8s ease;
-  z-index: 3;
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.9s cubic-bezier(.22,1,.36,1);
+  z-index: 4;
+
+  backface-visibility: hidden;
+  box-shadow: inset 0 -12px 20px rgba(0,0,0,0.15);
 }
 
-/* ouverture rabat */
+/* ✅ OUVERTURE RABAT — MODIFIÉ */
 .envelope.open .flap {
-  transform: rotateX(160deg);
+  transform: rotateX(175deg);
 }
 
-/* PAPIER (caché au départ) */
+/* PAPIER */
 .paper {
   position: absolute;
   left: 50%;
@@ -94,7 +102,6 @@ body {
   opacity: 0;
 }
 
-/* sort seulement quand open */
 .envelope.open .paper {
   bottom: 15%;
   opacity: 1;
