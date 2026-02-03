@@ -18,12 +18,48 @@ body {
     radial-gradient(circle at top, #5f9cff, #2b4a9a 35%, #0b1026 75%),
     linear-gradient(180deg, #ff9a9e, #fad0c4);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+}
+
+/* 💌 OVERLAY LETTRE */
+.letter-overlay {
+  position: fixed;
+  inset: 0;
+  background: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
   animation: fadeIn 1s ease;
 }
+
+.letter {
+  font-size: clamp(6rem, 20vw, 12rem);
+  cursor: pointer;
+  animation: pulse 2s infinite;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.letter:hover {
+  transform: scale(1.15) rotate(-3deg);
+}
+
+.letter.open {
+  transform: scale(3);
+  opacity: 0;
+}
+
+/* CONTENU CACHÉ AU DÉBUT */
+#content {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1s ease forwards;
+}
+
+/* --- TON CSS EXISTANT --- */
 
 h1 {
   color: white;
@@ -56,9 +92,7 @@ button {
   box-shadow: 0 0 20px rgba(255,95,158,0.9);
 }
 
-#yesBtn:hover {
-  transform: scale(1.2);
-}
+#yesBtn:hover { transform: scale(1.2); }
 
 #noBtn {
   background-color: #4facfe;
@@ -72,7 +106,7 @@ button {
   animation: pop 0.6s ease;
 }
 
-/* ⭐ ÉTOILES FIXES */
+/* ÉTOILES */
 .star {
   position: absolute;
   width: 2px;
@@ -83,12 +117,6 @@ button {
   animation: twinkle 3s infinite ease-in-out;
 }
 
-@keyframes twinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
-}
-
-/* 🌠 ÉTOILES FILANTES */
 .shooting-star {
   position: absolute;
   width: 120px;
@@ -97,17 +125,6 @@ button {
   opacity: 0.8;
   transform: rotate(-45deg);
   animation: shoot 1.2s ease-out forwards;
-}
-
-@keyframes shoot {
-  from {
-    transform: translate(0, 0) rotate(-45deg);
-    opacity: 1;
-  }
-  to {
-    transform: translate(-600px, 600px) rotate(-45deg);
-    opacity: 0;
-  }
 }
 
 canvas {
@@ -123,6 +140,12 @@ canvas {
   font-size: 1.3rem;
   opacity: 0.7;
   animation: hearts 6s linear infinite;
+}
+
+/* ANIMATIONS */
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 
 @keyframes fadeIn {
@@ -145,44 +168,33 @@ canvas {
   from { transform: translateY(0); opacity: 0.8; }
   to { transform: translateY(-120vh); opacity: 0; }
 }
+
+@keyframes twinkle {
+  0%,100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+@keyframes shoot {
+  to {
+    transform: translate(-600px, 600px) rotate(-45deg);
+    opacity: 0;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<script>
-/* ⭐ ÉTOILES FIXES */
-for (let i = 0; i < 120; i++) {
-  const star = document.createElement("div");
-  star.className = "star";
-  star.style.left = Math.random() * 100 + "vw";
-  star.style.top = Math.random() * 100 + "vh";
-  star.style.animationDelay = Math.random() * 3 + "s";
-  document.body.appendChild(star);
-}
+<!-- 💌 LETTRE -->
+<div class="letter-overlay" id="overlay">
+  <div class="letter" onclick="openLetter()">💌</div>
+</div>
 
-/* 🌠 ÉTOILES FILANTES OCCASIONNELLES */
-function createShootingStar() {
-  const star = document.createElement("div");
-  star.className = "shooting-star";
-  star.style.top = Math.random() * 40 + "vh";
-  star.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(star);
-  setTimeout(() => star.remove(), 1300);
-}
-
-function randomShootingStar() {
-  createShootingStar();
-  const next = Math.random() * 3000 + 4000; // 4 à 7 secondes
-  setTimeout(randomShootingStar, next);
-}
-
-randomShootingStar();
-</script>
+<!-- 🌟 CONTENU -->
+<div id="content">
 
 <img class="main"
-src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-alt="Animal Crossing Love">
+src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
 <h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
 
@@ -196,91 +208,56 @@ alt="Animal Crossing Love">
 </div>
 
 <canvas id="fireworks"></canvas>
+</div>
 
 <script>
-let noTexts = [
-  "Non",
-  "Hmm…",
-  "Tu es sûre ? ",
-  "Vraiment sûre ?",
-  "Dernière chance ",
-  "Bon… j’attends allerrrr ❤️"
-];
+/* 💌 OUVERTURE LETTRE */
+function openLetter() {
+  const letter = document.querySelector(".letter");
+  letter.classList.add("open");
+  setTimeout(() => {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("content").style.display = "flex";
+  }, 600);
+}
 
-let noCount = 0;
-let yesSize = 1.2;
-let noSize = 1.2;
+/* ⭐ ÉTOILES */
+for (let i = 0; i < 120; i++) {
+  const star = document.createElement("div");
+  star.className = "star";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.top = Math.random() * 100 + "vh";
+  star.style.animationDelay = Math.random() * 3 + "s";
+  document.body.appendChild(star);
+}
+
+/* 🌠 ÉTOILES FILANTES */
+function shooting() {
+  const s = document.createElement("div");
+  s.className = "shooting-star";
+  s.style.top = Math.random() * 40 + "vh";
+  s.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 1200);
+  setTimeout(shooting, Math.random() * 3000 + 4000);
+}
+shooting();
+
+/* LOGIQUE BOUTONS */
+let noTexts = ["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
+let noCount = 0, yesSize = 1.2, noSize = 1.2;
 
 function noClick() {
   noCount++;
-  document.getElementById("noBtn").innerText =
-    noTexts[noCount % noTexts.length];
-
-  yesSize += 0.3;
-  document.getElementById("yesBtn").style.fontSize = yesSize + "rem";
-
-  noSize -= 0.1;
-  if (noSize < 0.6) noSize = 0.6;
-  document.getElementById("noBtn").style.fontSize = noSize + "rem";
+  noBtn.innerText = noTexts[noCount % noTexts.length];
+  yesBtn.style.fontSize = (yesSize += 0.3) + "rem";
+  noBtn.style.fontSize = Math.max(0.6, (noSize -= 0.1)) + "rem";
 }
 
 function yesClick() {
-  document.getElementById("buttons").style.display = "none";
-  document.getElementById("result").style.display = "block";
-  startFireworks();
+  buttons.style.display = "none";
+  result.style.display = "block";
 }
-
-/* 💖 COEURS */
-setInterval(() => {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerText = "❤️";
-  heart.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
-}, 1200);
-
-/* 🎆 FEUX D’ARTIFICE ROSE / ROUGE */
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-const colors = ["#ff4d6d", "#ff85a1", "#ff1e56"];
-
-function startFireworks() {
-  setInterval(() => {
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height / 2;
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    for (let i = 0; i < 50; i++) {
-      particles.push({
-        x, y,
-        dx: Math.cos(i) * Math.random() * 4,
-        dy: Math.sin(i) * Math.random() * 4,
-        life: 60,
-        color
-      });
-    }
-  }, 700);
-}
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach((p, i) => {
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-    p.x += p.dx;
-    p.y += p.dy;
-    p.life--;
-    if (p.life <= 0) particles.splice(i, 1);
-  });
-  requestAnimationFrame(animate);
-}
-animate();
 </script>
 
 </body>
