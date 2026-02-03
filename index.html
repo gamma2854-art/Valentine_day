@@ -57,13 +57,12 @@ body{
   z-index:1;
 }
 
-/* face avant (cache papier) */
+/* face avant */
 .env-front{
   position:absolute;
   left:0; right:0; bottom:0;
   height:65%;
   background:linear-gradient(#ffc2da,#ff8fbe);
-  clip-path:polygon(0 100%,100% 100%,100% 0,0 0);
   z-index:3;
 }
 
@@ -87,7 +86,7 @@ body{
 .envelope.tilt-left{transform:rotateY(-18deg)}
 .envelope.tilt-right{transform:rotateY(18deg)}
 
-/* papier — VRAIMENT dedans */
+/* ✅ FEUILLE — corrigée (plus visible au début) */
 .paper{
   position:absolute;
   left:50%;
@@ -96,7 +95,7 @@ body{
   background:white;
   border-radius:8px;
   transform:translateX(-50%);
-  bottom:-85%;
+  bottom:-120%;          /* <-- correction */
   z-index:2;
   transition:bottom 1.4s ease;
 }
@@ -119,6 +118,15 @@ body{
   flex-direction:column;
   align-items:center;
   color:white;
+}
+
+/* ✅ TITRE — corrigé */
+h1{
+  color:white;
+  text-align:center;
+  font-size:clamp(1.4rem,4.2vw,2.2rem);
+  margin:18px 0;
+  line-height:1.2;
 }
 
 img.main{
@@ -173,6 +181,7 @@ canvas{
 
 <div id="content">
 <img class="main" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+
 <h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
 
 <div id="buttons">
@@ -186,7 +195,6 @@ canvas{
 <canvas id="fw"></canvas>
 
 <script>
-/* ouverture enveloppe */
 let step=0;
 function openLetterStep(){
   step++;
@@ -217,7 +225,7 @@ function yesClick(){
   fireworksRunning=true;
 }
 
-/* 🎆 FEU D’ARTIFICE CONTINU */
+/* 🎆 feu d’artifice continu */
 const canvas=document.getElementById("fw");
 const ctx=canvas.getContext("2d");
 function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
