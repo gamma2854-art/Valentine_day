@@ -23,7 +23,7 @@ body {
   overflow: hidden;
 }
 
-/* 💌 OVERLAY */
+/* OVERLAY */
 .letter-overlay {
   position: fixed;
   inset: 0;
@@ -35,7 +35,7 @@ body {
   animation: fadeIn 1s ease;
 }
 
-/* ✉️ ENVELOPPE */
+/* ENVELOPPE */
 .envelope-wrapper {
   display: flex;
   flex-direction: column;
@@ -53,9 +53,10 @@ body {
   box-shadow: 0 25px 50px rgba(0,0,0,0.35);
   transform-style: preserve-3d;
   transition: transform 0.4s ease;
+  overflow: hidden; /* ✅ cache le papier dedans */
 }
 
-/* bascule gauche droite */
+/* bascule */
 .envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
 .envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
 
@@ -71,7 +72,6 @@ body {
   transform-origin: top;
   transition: transform 0.8s ease;
   z-index: 3;
-  border-radius: 12px;
 }
 
 /* ouverture rabat */
@@ -79,23 +79,26 @@ body {
   transform: rotateX(160deg);
 }
 
-/* feuille qui sort */
+/* PAPIER (caché au départ) */
 .paper {
   position: absolute;
   left: 50%;
-  bottom: 10px;
-  width: 70%;
-  height: 85%;
+  bottom: -70%;
+  width: 72%;
+  height: 90%;
   background: white;
   border-radius: 8px;
-  transform: translateX(-50%) translateY(40px);
-  transition: transform 1s ease, opacity 1s ease;
+  transform: translateX(-50%);
+  transition: bottom 1.2s ease, transform 1.2s ease, opacity 1s ease;
   z-index: 2;
+  opacity: 0;
 }
 
+/* sort seulement quand open */
 .envelope.open .paper {
-  transform: translateX(-50%) translateY(-220px) scale(1.1);
-  opacity: 0;
+  bottom: 15%;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-180px) scale(1.05);
 }
 
 /* notif */
@@ -103,7 +106,7 @@ body {
   margin-top: 18px;
   color: white;
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.95;
   animation: pulse 2s infinite;
 }
 
@@ -219,7 +222,6 @@ button {
 
 <body>
 
-<!-- ✉️ ENVELOPPE -->
 <div class="letter-overlay" id="overlay">
   <div class="envelope-wrapper" onclick="openLetterStep()">
     <div class="envelope" id="envelope">
@@ -230,9 +232,7 @@ button {
   </div>
 </div>
 
-<!-- CONTENU -->
 <div id="content">
-
 <img class="main"
 src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
@@ -246,11 +246,9 @@ src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 <div id="result">
   <h1>Ah ba quand même 🙂</h1>
 </div>
-
 </div>
 
 <script>
-/* ouverture multi-clic */
 let clickStep = 0;
 function openLetterStep() {
   const env = document.getElementById("envelope");
@@ -262,9 +260,9 @@ function openLetterStep() {
   if (clickStep >= 5) {
     env.classList.add("open");
     setTimeout(() => {
-      document.getElementById("overlay").style.display = "none";
-      document.getElementById("content").style.display = "flex";
-    }, 1200);
+      overlay.style.display = "none";
+      content.style.display = "flex";
+    }, 1500);
   }
 }
 
@@ -274,11 +272,10 @@ for (let i = 0; i < 120; i++) {
   star.className = "star";
   star.style.left = Math.random() * 100 + "vw";
   star.style.top = Math.random() * 100 + "vh";
-  star.style.animationDelay = Math.random() * 3 + "s";
   document.body.appendChild(star);
 }
 
-/* étoiles filantes */
+/* shooting */
 function shooting() {
   const s = document.createElement("div");
   s.className = "shooting-star";
