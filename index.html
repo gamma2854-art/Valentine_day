@@ -23,6 +23,23 @@ body {
   overflow: hidden;
 }
 
+/* ⭐ étoiles */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: .8;
+  animation: twinkle 3s infinite;
+  z-index: 0;
+}
+
+@keyframes twinkle {
+  0%,100% { opacity:.2 }
+  50% { opacity:1 }
+}
+
 /* OVERLAY */
 .letter-overlay {
   position: fixed;
@@ -48,13 +65,28 @@ body {
   position: relative;
   width: clamp(260px, 45vw, 360px);
   height: clamp(180px, 30vw, 240px);
-  background: linear-gradient(#ffd6e7, #ff9fc5);
   border-radius: 12px;
   box-shadow: 0 25px 50px rgba(0,0,0,0.35);
   transform-style: preserve-3d;
   perspective: 1000px;
   transition: transform 0.4s ease;
   overflow: hidden;
+}
+
+/* ✅ devant enveloppe visible */
+.env-body{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(#ffd6e7, #ff9fc5);
+  z-index:1;
+}
+
+.env-front{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:60%;
+  background: linear-gradient(#ffc2da,#ff8fbe);
+  z-index:3;
 }
 
 .envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
@@ -82,7 +114,7 @@ body {
 .paper {
   position: absolute;
   left: 50%;
-  bottom: -70%;
+  bottom: -80%;
   width: 72%;
   height: 90%;
   background: white;
@@ -94,9 +126,9 @@ body {
 }
 
 .envelope.open .paper {
-  bottom: 15%;
+  bottom: 20%;
   opacity: 1;
-  transform: translateX(-50%) translateY(-180px) scale(1.05);
+  transform: translateX(-50%) translateY(-160px);
 }
 
 .notif {
@@ -112,11 +144,13 @@ body {
   flex-direction: column;
   align-items: center;
   animation: fadeIn 1s ease forwards;
+  position: relative;
+  z-index: 2;
 }
 
 h1 {
   color: white;
-  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-size: clamp(1.5rem, 5vw, 2.4rem);
   margin: 20px 0;
   text-shadow: 0 0 18px rgba(255,200,230,0.95);
 }
@@ -154,11 +188,11 @@ button {
   animation: pop 0.6s ease;
 }
 
-/* canvas feu artifice */
 canvas {
   position: fixed;
   inset: 0;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* animations */
@@ -188,8 +222,10 @@ canvas {
 <div class="letter-overlay" id="overlay">
   <div class="envelope-wrapper" onclick="openLetterStep()">
     <div class="envelope" id="envelope">
-      <div class="flap"></div>
+      <div class="env-body"></div>
       <div class="paper"></div>
+      <div class="env-front"></div>
+      <div class="flap"></div>
     </div>
     <div class="notif">Vous avez un nouveau message</div>
   </div>
@@ -214,6 +250,18 @@ src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 <canvas id="fw"></canvas>
 
 <script>
+/* ⭐ étoiles créées quand la question apparaît */
+function createStars(){
+  for(let i=0;i<120;i++){
+    const s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    s.style.animationDelay=Math.random()*3+"s";
+    document.body.appendChild(s);
+  }
+}
+
 /* ouverture enveloppe */
 let clickStep = 0;
 function openLetterStep() {
@@ -227,6 +275,7 @@ function openLetterStep() {
     setTimeout(()=>{
       overlay.style.display="none";
       content.style.display="flex";
+      createStars(); /* ✅ étoiles activées ici */
     },1500);
   }
 }
@@ -245,10 +294,10 @@ function noClick(){
 function yesClick(){
   buttons.style.display="none";
   result.style.display="block";
-  launchFireworks();
+  fireworksRunning = true; /* ✅ feu continu */
 }
 
-/* 🎆 FEU D’ARTIFICE ROSE/ROUGE */
+/* 🎆 FEU D’ARTIFICE INFINI */
 const canvas = document.getElementById("fw");
 const ctx = canvas.getContext("2d");
 resize();
@@ -259,14 +308,13 @@ function resize(){
   canvas.height = innerHeight;
 }
 
-function launchFireworks(){
-  for(let i=0;i<6;i++){
-    setTimeout(()=>burst(Math.random()*canvas.width, Math.random()*canvas.height*0.6), i*250);
-  }
-}
+const particles=[];
+let fireworksRunning=false;
+const colors=["#ff2d55","#ff4fa3","#ff6fae","#ff1744"];
 
-function burst(x,y){
-  const colors=["#ff2d55","#ff4fa3","#ff6fae","#ff1744"];
+function spawnBurst(){
+  const x=Math.random()*canvas.width;
+  const y=Math.random()*canvas.height*0.6;
   for(let i=0;i<70;i++){
     particles.push({
       x,y,
@@ -278,10 +326,13 @@ function burst(x,y){
   }
 }
 
-const particles=[];
-
 function tick(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(fireworksRunning && Math.random()<0.08){
+    spawnBurst();
+  }
+
   for(let i=particles.length-1;i>=0;i--){
     const p=particles[i];
     p.x+=p.vx;
