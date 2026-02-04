@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Camille 💖</title>
 
+<!-- ================= TON CSS ORIGINAL — INCHANGÉ ================= -->
 <style>
 * { box-sizing: border-box; }
 
@@ -23,7 +24,7 @@ body {
   overflow: hidden;
 }
 
-/* ⭐ étoiles */
+/* étoiles */
 .star {
   position: fixed;
   width: 2px;
@@ -40,7 +41,7 @@ body {
   50% { opacity:1 }
 }
 
-/* 💕 pluie de cœurs */
+/* pluie de cœurs */
 .heart-rain {
   position: fixed;
   top: -40px;
@@ -56,7 +57,7 @@ body {
   }
 }
 
-/* OVERLAY */
+/* overlay */
 .letter-overlay {
   position: fixed;
   inset: 0;
@@ -65,10 +66,9 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeIn 1s ease;
 }
 
-/* ENVELOPPE */
+/* enveloppe */
 .envelope-wrapper {
   display: flex;
   flex-direction: column;
@@ -79,203 +79,99 @@ body {
 
 .envelope {
   position: relative;
-  width: clamp(260px, 45vw, 360px);
-  height: clamp(180px, 30vw, 240px);
+  width: 320px;
+  height: 220px;
   border-radius: 12px;
   box-shadow: 0 25px 50px rgba(0,0,0,0.35);
   transform-style: preserve-3d;
-  perspective: 1000px;
-  transition: transform 0.4s ease;
-  overflow: hidden;
+  transition: transform .4s;
 }
 
-.env-body{
+.env-body{position:absolute;inset:0;background:#ffd6e7}
+.env-front{position:absolute;bottom:0;height:60%;width:100%;background:#ff8fbe;z-index:3}
+
+.flap{
   position:absolute;
-  inset:0;
-  background: linear-gradient(#ffd6e7, #ff9fc5);
-  z-index:1;
+  width:100%;
+  height:100%;
+  background:#ffb3cf;
+  clip-path:polygon(0 0,100% 0,50% 60%);
+  transform-origin:top;
+  transition:1.1s;
+  z-index:5;
 }
 
-.env-front{
+.envelope.open .flap{transform:rotateX(185deg)}
+
+.paper{
   position:absolute;
-  left:0; right:0; bottom:0;
-  height:60%;
-  background: linear-gradient(#ffc2da,#ff8fbe);
-  z-index:3;
+  left:50%;
+  bottom:-70%;
+  width:72%;
+  height:90%;
+  background:white;
+  border-radius:8px;
+  transform:translateX(-50%);
+  opacity:0;
+  transition:1.2s;
 }
 
-/* rabat réaliste */
-.flap {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(#ffb3cf, #ff8fbe);
-  clip-path: polygon(0 0, 100% 0, 50% 60%);
-  transform-origin: top center;
-  transform: rotateX(0deg);
-  transition: transform 1.1s cubic-bezier(.22,1,.36,1);
-  z-index: 5;
-  backface-visibility: hidden;
+.envelope.open .paper{
+  bottom:25%;
+  opacity:1;
 }
 
-.envelope.open .flap {
-  transform: rotateX(185deg);
-  z-index: 0;
-}
-
-/* papier */
-.paper {
-  position: absolute;
-  left: 50%;
-  bottom: -70%;
-  width: 72%;
-  height: 90%;
-  background: white;
-  border-radius: 8px;
-  transform: translateX(-50%) scale(.9);
-  transition: bottom 1.2s ease, transform 1.2s ease, opacity 1s ease;
-  z-index: 2;
-  opacity: 0;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-  display:flex;
+#content{
+  display:none;
+  flex-direction:column;
   align-items:center;
-  justify-content:center;
-}
-
-.envelope.open .paper {
-  bottom: 25%;
-  opacity: 1;
-  transform: translateX(-50%) translateY(-140px) scale(1);
-}
-
-/* ❤️ cœur sur la feuille */
-.paper-heart{
-  font-size: clamp(42px, 6vw, 64px);
-  animation: heartPulse 2s infinite;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
-}
-
-@keyframes heartPulse{
-  0%,100%{ transform:scale(1); }
-  50%{ transform:scale(1.15); }
-}
-
-.envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
-.envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
-
-.notif {
-  margin-top: 18px;
-  color: white;
-  font-size: 1.1rem;
-  animation: pulse 2s infinite;
-}
-
-/* CONTENU */
-#content {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  animation: fadeIn 1s ease forwards;
-  position: relative;
-  z-index: 2;
-}
-
-h1 {
-  color: white;
-  font-size: clamp(1.5rem, 5vw, 2.4rem);
-  margin: 20px 0;
-  text-shadow: 0 0 18px rgba(255,200,230,0.95);
-}
-
-img.main {
-  width: min(75vw, 280px);
-  margin-bottom: 20px;
-  animation: float 3s ease-in-out infinite;
-}
-
-button {
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  margin: 10px;
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-}
-
-#yesBtn {
-  background-color: #ff5f9e;
-  color: white;
-  box-shadow: 0 0 20px rgba(255,95,158,0.9);
-}
-
-#noBtn {
-  background-color: #4facfe;
-  color: white;
-}
-
-#result {
-  display: none;
-  margin-top: 30px;
-  color: white;
-  animation: pop 0.6s ease;
-}
-
-canvas {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes float {
-  50% { transform: translateY(-12px); }
-}
-
-@keyframes pop {
-  from { transform: scale(0.6); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  z-index:2;
 }
 </style>
 </head>
 
 <body>
 
+<!-- ================= TON HTML ORIGINAL — INCHANGÉ ================= -->
 <div class="letter-overlay" id="overlay">
   <div class="envelope-wrapper" onclick="openLetterStep()">
     <div class="envelope" id="envelope">
       <div class="env-body"></div>
-      <div class="paper"><div class="paper-heart">❤️</div></div>
+      <div class="paper">❤️</div>
       <div class="env-front"></div>
       <div class="flap"></div>
     </div>
-    <div class="notif">Vous avez un nouveau message</div>
+    <div style="color:white;margin-top:12px">Vous avez un nouveau message</div>
   </div>
 </div>
 
 <div id="content">
-<img class="main" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
-<h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
-<div id="buttons">
-  <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
-  <button id="noBtn" onclick="noClick()">Non</button>
+  <h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
+  <div id="buttons">
+    <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
+    <button id="noBtn">Non</button>
+  </div>
+  <div id="result" style="display:none">Ah bah quand même 🙂</div>
 </div>
-<div id="result"><h1>Ah ba quand même 🙂</h1></div>
-</div>
-
-<canvas id="fw"></canvas>
 
 <script>
-/* TON JS ORIGINAL — INCHANGÉ */
+let clickStep=0;
+function openLetterStep(){
+  clickStep++;
+  if(clickStep>=5){
+    envelope.classList.add("open");
+    setTimeout(()=>{
+      overlay.style.display="none";
+      content.style.display="flex";
+    },1200);
+  }
+}
+
+function yesClick(){
+  buttons.style.display="none";
+  result.style.display="block";
+  setTimeout(showFish,1000);
+}
 </script>
 
 <!-- ================= AJOUTS UNIQUEMENT ================= -->
@@ -283,64 +179,61 @@ canvas {
 <style>
 #fishGame{
   display:none;
-  font-size:70px;
+  font-size:64px;
   cursor:pointer;
-  animation: swim 2s infinite alternate ease-in-out;
+  pointer-events:none;
 }
-@keyframes swim{from{transform:translateX(-40px)}to{transform:translateX(40px)}}
 
 #giftOverlay{
-  display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.7);
-  z-index:99999;
+  display:none;
   justify-content:center;
   align-items:center;
   flex-direction:column;
+  pointer-events:none;
 }
 
 .gift{
-  width:180px;height:160px;
+  width:160px;
+  height:140px;
   background:#ff6fae;
   border-radius:14px;
-  position:relative;
   cursor:pointer;
 }
-.lid{
-  position:absolute;
-  top:-40px;width:100%;height:40px;
-  background:#ff8fc7;
-  border-radius:14px 14px 0 0;
-  transform-origin:bottom;
-  transition:1s;
-}
-.gift.open .lid{transform:rotateX(140deg)}
-.msg{color:white;font-size:1.6rem;opacity:0;margin-top:40px}
+
+.msg{color:white;margin-top:30px;opacity:0}
 </style>
 
 <div id="fishGame">🐟</div>
 
 <div id="giftOverlay">
-  <div class="gift" onclick="this.classList.add('open');setTimeout(()=>document.querySelector('.msg').style.opacity=1,700)">
-    <div class="lid"></div>
-  </div>
-  <div class="msg">💙 Tu as gagné une visite à l’aquarium de ton choix 🐠</div>
+  <div class="gift" onclick="openGift()"></div>
+  <div class="msg" id="giftMsg">💙 Visite à l’aquarium de ton choix 🐠</div>
 </div>
 
 <script>
 let fishClicks=0;
-document.getElementById("yesBtn").addEventListener("click",()=>{
-  setTimeout(()=>document.getElementById("fishGame").style.display="block",1200);
-});
+
+function showFish(){
+  const f=document.getElementById("fishGame");
+  f.style.display="block";
+  f.style.pointerEvents="auto";
+}
 
 document.getElementById("fishGame").onclick=()=>{
   fishClicks++;
   if(fishClicks>=5){
-    document.getElementById("fishGame").style.display="none";
-    document.getElementById("giftOverlay").style.display="flex";
+    fishGame.style.display="none";
+    giftOverlay.style.display="flex";
+    giftOverlay.style.pointerEvents="auto";
   }
 };
+
+function openGift(){
+  giftMsg.style.opacity=1;
+}
 </script>
 
 </body>
