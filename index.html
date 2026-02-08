@@ -3,70 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Créateur de bouquet</title>
+<title>Bouquet CSS animé</title>
 
 <style>
 body{
   margin:0;
-  font-family: system-ui, Arial, sans-serif;
-  background: linear-gradient(180deg,#ffd1e8,#ffb3d7);
+  font-family:system-ui,Arial;
+  background:linear-gradient(180deg,#ffd6ea,#ffb3d7);
   text-align:center;
 }
 
-h1{
-  margin:14px 10px;
-}
+h1{margin:14px}
 
-/* 🌸 PREVIEW BOUQUET */
+/* ---------- PREVIEW ---------- */
+
 .preview{
   max-width:520px;
-  margin:10px auto;
-  padding:16px;
+  margin:auto;
+  padding:12px;
 }
 
 .bouquet-paper{
-  background:linear-gradient(#fff,#ffe6f2);
-  border-radius:24px 24px 50px 50px;
-  padding:18px 14px 30px;
-  min-height:160px;
-  box-shadow:0 12px 24px rgba(0,0,0,0.15);
+  background:linear-gradient(#fff,#ffe9f3);
+  border-radius:28px 28px 60px 60px;
+  padding:20px 10px 40px;
+  min-height:260px;
   position:relative;
-  overflow:hidden;
+  box-shadow:0 14px 28px rgba(0,0,0,.18);
+}
+
+#bouquet{
+  position:relative;
+  height:210px;
 }
 
 .ribbon{
   position:absolute;
-  bottom:8px;
+  bottom:6px;
   left:50%;
   transform:translateX(-50%);
   font-size:28px;
 }
 
-/* 💐 bouquet visuel */
-#bouquet{
-  position:relative;
-  height:130px;
+/* ---------- TIGE + FEUILLES ---------- */
+
+.stem{
+  position:absolute;
+  width:4px;
+  height:120px;
+  background:linear-gradient(#4caf50,#2e7d32);
+  left:50%;
+  bottom:-110px;
+  transform:translateX(-50%);
+  border-radius:4px;
 }
+
+.leaf{
+  position:absolute;
+  width:26px;
+  height:14px;
+  background:#43a047;
+  border-radius:14px 14px 14px 0;
+}
+
+.leaf.l1{ left:-22px; top:40px; transform:rotate(-35deg); }
+.leaf.l2{ left:4px; top:70px; transform:rotate(35deg); }
+
+/* ---------- FLEUR ---------- */
 
 .flower{
   position:absolute;
-  font-size:34px;
-  animation: pop .35s ease;
+  transform-origin:bottom center;
+  animation:grow .4s ease, sway 4s ease-in-out infinite;
 }
 
-@keyframes pop{
-  from{ transform:scale(.3) rotate(0deg); opacity:0 }
-  to{ transform:scale(1) rotate(var(--rot)); opacity:1 }
+@keyframes grow{
+  from{transform:scale(.3) rotate(0);opacity:0}
+  to{transform:scale(1) rotate(var(--rot));opacity:1}
 }
 
-/* LISTE */
+@keyframes sway{
+  0%,100%{ transform:rotate(calc(var(--rot) - 2deg)) }
+  50%{ transform:rotate(calc(var(--rot) + 2deg)) }
+}
+
+.head{
+  position:relative;
+  width:60px;
+  height:60px;
+}
+
+/* tailles */
+.size-s .head{ transform:scale(.7); }
+.size-m .head{ transform:scale(1); }
+.size-l .head{ transform:scale(1.3); }
+
+/* pétales */
+.petal{
+  position:absolute;
+  width:22px;
+  height:30px;
+  border-radius:50%;
+  left:50%;
+  top:50%;
+  transform-origin:center -10px;
+}
+
+/* styles fleurs */
+.round .petal{ background:#ff6fae; }
+.round .center{ background:#ffd54f; }
+
+.daisy .petal{ background:white; }
+.daisy .center{ background:#ffca28; }
+
+.tulip .petal{
+  background:#ff4fa3;
+  border-radius:50% 50% 10% 10%;
+}
+
+.rose .petal{
+  background:#d81b60;
+  border-radius:60% 40% 60% 40%;
+}
+
+.violet .petal{ background:#7e57c2; }
+.violet .center{ background:#ffeb3b; }
+
+.orange .petal{ background:#ff7043; }
+
+.center{
+  position:absolute;
+  width:16px;height:16px;
+  border-radius:50%;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+
+/* ---------- UI ---------- */
+
 .container{
   max-width:520px;
   margin:auto;
   padding:12px;
 }
 
-.flower-row{
+.row{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -74,55 +156,39 @@ h1{
   margin:10px 0;
   padding:14px;
   border-radius:16px;
-  box-shadow:0 6px 14px rgba(0,0,0,0.08);
-  font-size:28px;
+  box-shadow:0 6px 14px rgba(0,0,0,.08);
 }
 
-.controls{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
+.controls{display:flex;gap:12px;align-items:center}
 
 button{
+  width:44px;height:44px;
+  border:none;border-radius:12px;
   font-size:22px;
-  width:46px;
-  height:46px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
 }
 
-.plus{ background:#2e7d32; color:white; }
-.minus{ background:#c62828; color:white; }
-
-.count{
-  font-size:20px;
-  width:34px;
-}
+.plus{background:#2e7d32;color:white}
+.minus{background:#c62828;color:white}
 
 .action{
   width:100%;
-  height:auto;
   padding:14px;
-  font-size:18px;
   margin-top:14px;
+  border:none;
   border-radius:14px;
+  font-size:18px;
   background:#ff4fa3;
   color:white;
 }
 
-.reset{
-  background:#555;
-}
+.reset{background:#555}
 </style>
 </head>
 
 <body>
 
-<h1>💐 Composer un bouquet</h1>
+<h1>💐 Bouquet animé</h1>
 
-<!-- PREVIEW EN HAUT -->
 <div class="preview">
   <div class="bouquet-paper">
     <div id="bouquet"></div>
@@ -130,79 +196,117 @@ button{
   </div>
 </div>
 
-<div class="container">
-  <div id="flowerList"></div>
+<div class="container" id="list"></div>
 
-  <button class="action" onclick="buildBouquet()">Former le bouquet</button>
-  <button class="action reset" onclick="resetAll()">Réinitialiser</button>
-</div>
+<button class="action" onclick="build()">Former le bouquet</button>
+<button class="action reset" onclick="resetAll()">Reset</button>
 
 <script>
-const flowers = ["🌹","🌸","🌺","🌷","🪻","🌼"];
-const counts = {};
-flowers.forEach(f => counts[f]=0);
+const types=[
+{id:"rose",label:"Rose"},
+{id:"round",label:"Fleur ronde"},
+{id:"daisy",label:"Marguerite"},
+{id:"tulip",label:"Tulipe"},
+{id:"violet",label:"Violette"},
+{id:"orange",label:"Orange"}
+];
 
-const list = document.getElementById("flowerList");
+const counts={};
+types.forEach(t=>counts[t.id]=0);
 
-/* créer lignes */
-flowers.forEach(f => {
-  const row = document.createElement("div");
-  row.className = "flower-row";
+const list=document.getElementById("list");
 
-  row.innerHTML = `
-    <div>${f}</div>
-    <div class="controls">
-      <button class="minus">−</button>
-      <div class="count" id="count_${f}">0</div>
-      <button class="plus">+</button>
-    </div>
-  `;
-
-  row.querySelector(".minus").onclick = () => change(f,-1);
-  row.querySelector(".plus").onclick = () => change(f,1);
-
-  list.appendChild(row);
+types.forEach(t=>{
+ const row=document.createElement("div");
+ row.className="row";
+ row.innerHTML=`
+  <div>${t.label}</div>
+  <div class="controls">
+   <button class="minus">−</button>
+   <div id="c_${t.id}">0</div>
+   <button class="plus">+</button>
+  </div>`;
+ row.querySelector(".minus").onclick=()=>chg(t.id,-1);
+ row.querySelector(".plus").onclick=()=>chg(t.id,1);
+ list.appendChild(row);
 });
 
-function change(f,delta){
-  counts[f] = Math.max(0, counts[f]+delta);
-  document.getElementById("count_"+f).innerText = counts[f];
+function chg(id,d){
+ counts[id]=Math.max(0,counts[id]+d);
+ document.getElementById("c_"+id).innerText=counts[id];
 }
 
-/* 💐 construire bouquet visuel */
-function buildBouquet(){
-  bouquet.innerHTML = "";
+/* créer fleur complète */
+function makeFlower(type,depth){
+ const wrap=document.createElement("div");
+ wrap.className="flower "+type;
+ wrap.style.zIndex = depth;
 
-  const all = [];
-  flowers.forEach(f=>{
-    for(let i=0;i<counts[f];i++) all.push(f);
-  });
+ const head=document.createElement("div");
+ head.className="head";
 
-  all.forEach((f,i)=>{
-    const span = document.createElement("div");
-    span.className = "flower";
-    span.textContent = f;
+ const petals = (type==="tulip"||type==="rose")?3:6;
+ for(let i=0;i<petals;i++){
+   const p=document.createElement("div");
+   p.className="petal";
+   p.style.transform=`translate(-50%,-50%) rotate(${i*(360/petals)}deg)`;
+   head.appendChild(p);
+ }
 
-    // position bouquet (forme arrondie)
-    const angle = Math.random()*Math.PI;
-    const radius = Math.random()*45;
-    const x = 50 + Math.cos(angle)*radius;
-    const y = 90 - Math.sin(angle)*radius;
+ if(type!=="tulip" && type!=="rose"){
+   const c=document.createElement("div");
+   c.className="center";
+   head.appendChild(c);
+ }
 
-    span.style.left = x + "%";
-    span.style.top = y + "%";
-    span.style.setProperty("--rot", (Math.random()*60-30)+"deg");
+ const stem=document.createElement("div");
+ stem.className="stem";
+ stem.appendChild(Object.assign(document.createElement("div"),{className:"leaf l1"}));
+ stem.appendChild(Object.assign(document.createElement("div"),{className:"leaf l2"}));
 
-    bouquet.appendChild(span);
-  });
+ wrap.appendChild(head);
+ wrap.appendChild(stem);
+
+ const r=Math.random();
+ wrap.classList.add(r<.33?"size-s":r<.66?"size-m":"size-l");
+
+ return wrap;
+}
+
+/* bouquet éventail avec profondeur */
+function build(){
+ bouquet.innerHTML="";
+ const all=[];
+ types.forEach(t=>{
+  for(let i=0;i<counts[t.id];i++) all.push(t.id);
+ });
+
+ const spread=120;
+ const start=-spread/2;
+
+ all.forEach((type,i)=>{
+  const ang=start+(spread*(i/(Math.max(all.length-1,1))));
+  const rad=ang*Math.PI/180;
+
+  const depth = Math.round(100+Math.cos(rad)*50);
+
+  const fl=makeFlower(type, depth);
+
+  const radius=90+Math.random()*20;
+  fl.style.left=(50+Math.sin(rad)*radius)+"%";
+  fl.style.top =(120-Math.cos(rad)*radius*.85)+"%";
+  fl.style.setProperty("--rot",ang+"deg");
+
+  bouquet.appendChild(fl);
+ });
 }
 
 function resetAll(){
-  flowers.forEach(f=>{
-    counts[f]=0;
-    document.getElementById("count_"+f).innerText=0;
-  });
-  bouquet.innerHTML="";
+ types.forEach(t=>{
+  counts[t.id]=0;
+  document.getElementById("c_"+t.id).innerText=0;
+ });
+ bouquet.innerHTML="";
 }
 </script>
 
