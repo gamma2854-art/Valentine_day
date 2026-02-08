@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bouquet Builder</title>
+<title>Créateur de bouquet</title>
 
 <style>
 body{
   margin:0;
   font-family: system-ui, Arial, sans-serif;
-  background: linear-gradient(180deg,#ffe3ec,#ffd6f5);
+  background: linear-gradient(180deg,#eef7ff,#d7ecff);
   text-align:center;
 }
 
 h1{
-  margin:15px 10px;
+  margin:16px 10px;
 }
 
 .container{
-  max-width:500px;
+  max-width:520px;
   margin:auto;
-  padding:10px;
+  padding:12px;
 }
 
 .flower-row{
@@ -43,40 +43,66 @@ h1{
 
 button{
   font-size:22px;
-  width:44px;
-  height:44px;
+  width:46px;
+  height:46px;
   border:none;
   border-radius:12px;
   cursor:pointer;
 }
 
-.plus{ background:#4caf50; color:white; }
-.minus{ background:#ff5252; color:white; }
+.plus{ background:#2e7d32; color:white; }
+.minus{ background:#c62828; color:white; }
 
 .count{
   font-size:20px;
-  width:30px;
+  width:34px;
 }
 
-.bouquet-box{
-  margin-top:20px;
-  background:white;
-  border-radius:18px;
-  padding:16px;
-  min-height:120px;
-  box-shadow:0 8px 18px rgba(0,0,0,0.12);
+.reset{
+  width:auto;
+  padding:12px 18px;
+  font-size:16px;
+  background:#444;
+  color:white;
+  margin-top:14px;
+}
+
+.bouquet-wrap{
+  margin-top:22px;
+  padding:18px;
+}
+
+.bouquet-paper{
+  background:linear-gradient(#f5f5f5,#e0e0e0);
+  border-radius:18px 18px 40px 40px;
+  padding:18px 12px 26px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.12);
+  position:relative;
+  overflow:hidden;
+}
+
+.ribbon{
+  position:absolute;
+  bottom:8px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:26px;
 }
 
 #bouquet{
   font-size:34px;
-  line-height:1.4;
+  line-height:1.5;
+  min-height:80px;
   word-wrap:break-word;
 }
 
-.tip{
-  opacity:.6;
-  font-size:14px;
-  margin-top:6px;
+.flower-pop{
+  animation: pop .25s ease;
+}
+
+@keyframes pop{
+  from{ transform:scale(.6); opacity:.3; }
+  to{ transform:scale(1); opacity:1; }
 }
 </style>
 </head>
@@ -85,13 +111,17 @@ button{
 
 <div class="container">
 
-<h1>💐 Compose ton bouquet</h1>
+<h1>💐 Créateur de bouquet</h1>
 
 <div id="flowerList"></div>
 
-<div class="bouquet-box">
-  <div id="bouquet"></div>
-  <div class="tip">Le bouquet se forme ici</div>
+<button class="reset" onclick="resetAll()">Réinitialiser</button>
+
+<div class="bouquet-wrap">
+  <div class="bouquet-paper">
+    <div id="bouquet"></div>
+    <div class="ribbon">🎀</div>
+  </div>
 </div>
 
 </div>
@@ -116,11 +146,8 @@ flowers.forEach(f => {
     </div>
   `;
 
-  const minus = row.querySelector(".minus");
-  const plus = row.querySelector(".plus");
-
-  minus.onclick = () => change(f,-1);
-  plus.onclick = () => change(f,1);
+  row.querySelector(".minus").onclick = () => change(f,-1);
+  row.querySelector(".plus").onclick = () => change(f,1);
 
   list.appendChild(row);
 });
@@ -128,16 +155,27 @@ flowers.forEach(f => {
 function change(flower, delta){
   counts[flower] = Math.max(0, counts[flower] + delta);
   document.getElementById("count_"+flower).innerText = counts[flower];
-  renderBouquet();
+  renderBouquet(true);
 }
 
-function renderBouquet(){
+function renderBouquet(animate=false){
   let result = "";
-  flowers.forEach(f => {
-    result += f.repeat(counts[f]);
-  });
+  flowers.forEach(f => result += f.repeat(counts[f]));
+  bouquet.innerText = result || "";
 
-  bouquet.innerText = result || "—";
+  if(animate){
+    bouquet.classList.remove("flower-pop");
+    void bouquet.offsetWidth;
+    bouquet.classList.add("flower-pop");
+  }
+}
+
+function resetAll(){
+  flowers.forEach(f=>{
+    counts[f]=0;
+    document.getElementById("count_"+f).innerText=0;
+  });
+  renderBouquet();
 }
 
 renderBouquet();
