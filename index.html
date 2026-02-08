@@ -3,311 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bouquet CSS animé</title>
+<title>Camille 💖</title>
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui,Arial;
-  background:linear-gradient(180deg,#ffd6ea,#ffb3d7);
-  text-align:center;
+* { box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(circle at top, #5f9cff, #2b4a9a 35%, #0b1026 75%),
+    linear-gradient(180deg, #ff9a9e, #fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
-h1{margin:14px}
-
-/* ---------- PREVIEW ---------- */
-
-.preview{
-  max-width:520px;
-  margin:auto;
-  padding:12px;
+/* ⭐ étoiles */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: .8;
+  animation: twinkle 3s infinite;
+  z-index: 0;
 }
 
-.bouquet-paper{
-  background:linear-gradient(#fff,#ffe9f3);
-  border-radius:28px 28px 60px 60px;
-  padding:20px 10px 40px;
-  min-height:260px;
-  position:relative;
-  box-shadow:0 14px 28px rgba(0,0,0,.18);
+@keyframes twinkle {
+  0%,100% { opacity:.2 }
+  50% { opacity:1 }
 }
 
-#bouquet{
-  position:relative;
-  height:210px;
+/* 💕 pluie de cœurs */
+.heart-rain {
+  position: fixed;
+  top: -40px;
+  pointer-events: none;
+  animation: fall linear forwards;
+  z-index: 1;
 }
 
-.ribbon{
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* OVERLAY */
+.letter-overlay {
+  position: fixed;
+  inset: 0;
+  background: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 1s ease;
+}
+
+/* ENVELOPPE */
+.envelope-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  perspective: 900px;
+}
+
+.envelope {
+  position: relative;
+  width: clamp(260px, 45vw, 360px);
+  height: clamp(180px, 30vw, 240px);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.4s ease;
+  overflow: hidden;
+}
+
+.env-body{
   position:absolute;
-  bottom:6px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:28px;
+  inset:0;
+  background: linear-gradient(#ffd6e7, #ff9fc5);
+  z-index:1;
 }
 
-/* ---------- TIGE + FEUILLES ---------- */
-
-.stem{
+.env-front{
   position:absolute;
-  width:4px;
-  height:120px;
-  background:linear-gradient(#4caf50,#2e7d32);
-  left:50%;
-  bottom:-110px;
-  transform:translateX(-50%);
-  border-radius:4px;
+  left:0; right:0; bottom:0;
+  height:60%;
+  background: linear-gradient(#ffc2da,#ff8fbe);
+  z-index:3;
 }
 
-.leaf{
-  position:absolute;
-  width:26px;
-  height:14px;
-  background:#43a047;
-  border-radius:14px 14px 14px 0;
+/* rabat réaliste */
+.flap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#ffb3cf, #ff8fbe);
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 1.1s cubic-bezier(.22,1,.36,1);
+  z-index: 5;
+  backface-visibility: hidden;
 }
 
-.leaf.l1{ left:-22px; top:40px; transform:rotate(-35deg); }
-.leaf.l2{ left:4px; top:70px; transform:rotate(35deg); }
-
-/* ---------- FLEUR ---------- */
-
-.flower{
-  position:absolute;
-  transform-origin:bottom center;
-  animation:grow .4s ease, sway 4s ease-in-out infinite;
+.envelope.open .flap {
+  transform: rotateX(185deg);
+  z-index: 0;
 }
 
-@keyframes grow{
-  from{transform:scale(.3) rotate(0);opacity:0}
-  to{transform:scale(1) rotate(var(--rot));opacity:1}
-}
-
-@keyframes sway{
-  0%,100%{ transform:rotate(calc(var(--rot) - 2deg)) }
-  50%{ transform:rotate(calc(var(--rot) + 2deg)) }
-}
-
-.head{
-  position:relative;
-  width:60px;
-  height:60px;
-}
-
-/* tailles */
-.size-s .head{ transform:scale(.7); }
-.size-m .head{ transform:scale(1); }
-.size-l .head{ transform:scale(1.3); }
-
-/* pétales */
-.petal{
-  position:absolute;
-  width:22px;
-  height:30px;
-  border-radius:50%;
-  left:50%;
-  top:50%;
-  transform-origin:center -10px;
-}
-
-/* styles fleurs */
-.round .petal{ background:#ff6fae; }
-.round .center{ background:#ffd54f; }
-
-.daisy .petal{ background:white; }
-.daisy .center{ background:#ffca28; }
-
-.tulip .petal{
-  background:#ff4fa3;
-  border-radius:50% 50% 10% 10%;
-}
-
-.rose .petal{
-  background:#d81b60;
-  border-radius:60% 40% 60% 40%;
-}
-
-.violet .petal{ background:#7e57c2; }
-.violet .center{ background:#ffeb3b; }
-
-.orange .petal{ background:#ff7043; }
-
-.center{
-  position:absolute;
-  width:16px;height:16px;
-  border-radius:50%;
-  left:50%;top:50%;
-  transform:translate(-50%,-50%);
-  z-index:2;
-}
-
-/* ---------- UI ---------- */
-
-.container{
-  max-width:520px;
-  margin:auto;
-  padding:12px;
-}
-
-.row{
+/* papier */
+.paper {
+  position: absolute;
+  left: 50%;
+  bottom: -70%;
+  width: 72%;
+  height: 90%;
+  background: white;
+  border-radius: 8px;
+  transform: translateX(-50%) scale(.9);
+  transition: bottom 1.2s ease, transform 1.2s ease, opacity 1s ease;
+  z-index: 2;
+  opacity: 0;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  background:white;
-  margin:10px 0;
-  padding:14px;
-  border-radius:16px;
-  box-shadow:0 6px 14px rgba(0,0,0,.08);
+  justify-content:center;
 }
 
-.controls{display:flex;gap:12px;align-items:center}
-
-button{
-  width:44px;height:44px;
-  border:none;border-radius:12px;
-  font-size:22px;
+.envelope.open .paper {
+  bottom: 25%;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-140px) scale(1);
 }
 
-.plus{background:#2e7d32;color:white}
-.minus{background:#c62828;color:white}
-
-.action{
-  width:100%;
-  padding:14px;
-  margin-top:14px;
-  border:none;
-  border-radius:14px;
-  font-size:18px;
-  background:#ff4fa3;
-  color:white;
+/* ❤️ cœur sur la feuille */
+.paper-heart{
+  font-size: clamp(42px, 6vw, 64px);
+  animation: heartPulse 2s infinite;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
 }
 
-.reset{background:#555}
+@keyframes heartPulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.15); }
+}
+
+.envelope.tilt-left { transform: rotateY(-18deg) rotateZ(-2deg); }
+.envelope.tilt-right { transform: rotateY(18deg) rotateZ(2deg); }
+
+.notif {
+  margin-top: 18px;
+  color: white;
+  font-size: 1.1rem;
+  animation: pulse 2s infinite;
+}
+
+/* CONTENU */
+#content {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1s ease forwards;
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  color: white;
+  font-size: clamp(1.5rem, 5vw, 2.4rem);
+  margin: 20px 0;
+  text-shadow: 0 0 18px rgba(255,200,230,0.95);
+}
+
+img.main {
+  width: min(75vw, 280px);
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  margin: 10px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+#yesBtn {
+  background-color: #ff5f9e;
+  color: white;
+  box-shadow: 0 0 20px rgba(255,95,158,0.9);
+}
+
+#noBtn {
+  background-color: #4facfe;
+  color: white;
+}
+
+#result {
+  display: none;
+  margin-top: 30px;
+  color: white;
+  animation: pop 0.6s ease;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 </style>
 </head>
 
 <body>
 
-<h1>💐 Bouquet animé</h1>
+<div class="letter-overlay" id="overlay">
+  <div class="envelope-wrapper" onclick="openLetterStep()">
+    <div class="envelope" id="envelope">
+      <div class="env-body"></div>
 
-<div class="preview">
-  <div class="bouquet-paper">
-    <div id="bouquet"></div>
-    <div class="ribbon">🎀</div>
+      <div class="paper">
+        <div class="paper-heart">❤️</div>
+      </div>
+
+      <div class="env-front"></div>
+      <div class="flap"></div>
+    </div>
+    <div class="notif">Vous avez un nouveau message</div>
   </div>
 </div>
 
-<div class="container" id="list"></div>
+<div id="content">
+<img class="main"
+src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
-<button class="action" onclick="build()">Former le bouquet</button>
-<button class="action reset" onclick="resetAll()">Reset</button>
+<h1>Camille, veux-tu être ma Valentine ? ❤️</h1>
+
+<div id="buttons">
+  <button id="yesBtn" onclick="yesClick()">Oui 💕</button>
+  <button id="noBtn" onclick="noClick()">Non</button>
+</div>
+
+<div id="result">
+  <h1>Ah ba quand même 🙂</h1>
+</div>
+</div>
+
+<canvas id="fw"></canvas>
 
 <script>
-const types=[
-{id:"rose",label:"Rose"},
-{id:"round",label:"Fleur ronde"},
-{id:"daisy",label:"Marguerite"},
-{id:"tulip",label:"Tulipe"},
-{id:"violet",label:"Violette"},
-{id:"orange",label:"Orange"}
-];
-
-const counts={};
-types.forEach(t=>counts[t.id]=0);
-
-const list=document.getElementById("list");
-
-types.forEach(t=>{
- const row=document.createElement("div");
- row.className="row";
- row.innerHTML=`
-  <div>${t.label}</div>
-  <div class="controls">
-   <button class="minus">−</button>
-   <div id="c_${t.id}">0</div>
-   <button class="plus">+</button>
-  </div>`;
- row.querySelector(".minus").onclick=()=>chg(t.id,-1);
- row.querySelector(".plus").onclick=()=>chg(t.id,1);
- list.appendChild(row);
-});
-
-function chg(id,d){
- counts[id]=Math.max(0,counts[id]+d);
- document.getElementById("c_"+id).innerText=counts[id];
+function createStars(){
+  for(let i=0;i<120;i++){
+    const s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    s.style.animationDelay=Math.random()*3+"s";
+    document.body.appendChild(s);
+  }
 }
 
-/* créer fleur complète */
-function makeFlower(type,depth){
- const wrap=document.createElement("div");
- wrap.className="flower "+type;
- wrap.style.zIndex = depth;
+let clickStep = 0;
+function openLetterStep() {
+  const env = envelope;
+  clickStep++;
+  env.classList.toggle("tilt-left", clickStep%2);
+  env.classList.toggle("tilt-right", !(clickStep%2));
 
- const head=document.createElement("div");
- head.className="head";
-
- const petals = (type==="tulip"||type==="rose")?3:6;
- for(let i=0;i<petals;i++){
-   const p=document.createElement("div");
-   p.className="petal";
-   p.style.transform=`translate(-50%,-50%) rotate(${i*(360/petals)}deg)`;
-   head.appendChild(p);
- }
-
- if(type!=="tulip" && type!=="rose"){
-   const c=document.createElement("div");
-   c.className="center";
-   head.appendChild(c);
- }
-
- const stem=document.createElement("div");
- stem.className="stem";
- stem.appendChild(Object.assign(document.createElement("div"),{className:"leaf l1"}));
- stem.appendChild(Object.assign(document.createElement("div"),{className:"leaf l2"}));
-
- wrap.appendChild(head);
- wrap.appendChild(stem);
-
- const r=Math.random();
- wrap.classList.add(r<.33?"size-s":r<.66?"size-m":"size-l");
-
- return wrap;
+  if (clickStep >= 5) {
+    env.classList.add("open");
+    setTimeout(()=>{
+      overlay.style.display="none";
+      content.style.display="flex";
+      createStars();
+      startHeartRain(); // 💕
+    },1500);
+  }
 }
 
-/* bouquet éventail avec profondeur */
-function build(){
- bouquet.innerHTML="";
- const all=[];
- types.forEach(t=>{
-  for(let i=0;i<counts[t.id];i++) all.push(t.id);
- });
+let noTexts=["Non","Hmm…","Tu es sûre ?","Vraiment sûre ?","Dernière chance","Bon… j’attends ❤️"];
+let noCount=0, yesSize=1.2, noSize=1.2;
 
- const spread=120;
- const start=-spread/2;
-
- all.forEach((type,i)=>{
-  const ang=start+(spread*(i/(Math.max(all.length-1,1))));
-  const rad=ang*Math.PI/180;
-
-  const depth = Math.round(100+Math.cos(rad)*50);
-
-  const fl=makeFlower(type, depth);
-
-  const radius=90+Math.random()*20;
-  fl.style.left=(50+Math.sin(rad)*radius)+"%";
-  fl.style.top =(120-Math.cos(rad)*radius*.85)+"%";
-  fl.style.setProperty("--rot",ang+"deg");
-
-  bouquet.appendChild(fl);
- });
+function noClick(){
+  noCount++;
+  noBtn.innerText=noTexts[noCount%noTexts.length];
+  yesBtn.style.fontSize=(yesSize+=0.3)+"rem";
+  noBtn.style.fontSize=Math.max(0.6,(noSize-=0.1))+"rem";
 }
 
-function resetAll(){
- types.forEach(t=>{
-  counts[t.id]=0;
-  document.getElementById("c_"+t.id).innerText=0;
- });
- bouquet.innerHTML="";
+function yesClick(){
+  buttons.style.display="none";
+  result.style.display="block";
+  fireworksRunning = true;
 }
+
+/* 💕 pluie infinie de cœurs */
+let heartRainInterval = null;
+
+function startHeartRain() {
+  if (heartRainInterval) return;
+
+  const hearts = ["❤️", "🩷"];
+
+  heartRainInterval = setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart-rain";
+    heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = 18 + Math.random() * 26 + "px";
+    heart.style.animationDuration = 4 + Math.random() * 4 + "s";
+    heart.style.opacity = 0.6 + Math.random() * 0.4;
+
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 9000);
+  }, 220);
+}
+
+/* 🎆 feux d'artifice */
+const canvas = document.getElementById("fw");
+const ctx = canvas.getContext("2d");
+resize();
+window.onresize = resize;
+
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+
+const particles=[];
+let fireworksRunning=false;
+const colors=["#ff2d55","#ff4fa3","#ff6fae","#ff1744"];
+
+function spawnBurst(){
+  const x=Math.random()*canvas.width;
+  const y=Math.random()*canvas.height*0.6;
+  for(let i=0;i<70;i++){
+    particles.push({
+      x,y,
+      vx:(Math.random()-0.5)*6,
+      vy:(Math.random()-0.5)*6,
+      life:60,
+      color:colors[Math.floor(Math.random()*colors.length)]
+    });
+  }
+}
+
+function tick(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(fireworksRunning && Math.random()<0.08){
+    spawnBurst();
+  }
+
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.vy+=0.05;
+    p.life--;
+
+    ctx.globalAlpha=p.life/60;
+    ctx.fillStyle=p.color;
+    ctx.fillRect(p.x,p.y,3,3);
+
+    if(p.life<=0) particles.splice(i,1);
+  }
+  requestAnimationFrame(tick);
+}
+tick();
 </script>
 
 </body>
