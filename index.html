@@ -9,14 +9,57 @@
 body{
   margin:0;
   font-family: system-ui, Arial, sans-serif;
-  background: linear-gradient(180deg,#eef7ff,#d7ecff);
+  background: linear-gradient(180deg,#ffd1e8,#ffb3d7);
   text-align:center;
 }
 
 h1{
-  margin:16px 10px;
+  margin:14px 10px;
 }
 
+/* 🌸 PREVIEW BOUQUET */
+.preview{
+  max-width:520px;
+  margin:10px auto;
+  padding:16px;
+}
+
+.bouquet-paper{
+  background:linear-gradient(#fff,#ffe6f2);
+  border-radius:24px 24px 50px 50px;
+  padding:18px 14px 30px;
+  min-height:160px;
+  box-shadow:0 12px 24px rgba(0,0,0,0.15);
+  position:relative;
+  overflow:hidden;
+}
+
+.ribbon{
+  position:absolute;
+  bottom:8px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:28px;
+}
+
+/* 💐 bouquet visuel */
+#bouquet{
+  position:relative;
+  height:130px;
+}
+
+.flower{
+  position:absolute;
+  font-size:34px;
+  animation: pop .35s ease;
+}
+
+@keyframes pop{
+  from{ transform:scale(.3) rotate(0deg); opacity:0 }
+  to{ transform:scale(1) rotate(var(--rot)); opacity:1 }
+}
+
+/* LISTE */
 .container{
   max-width:520px;
   margin:auto;
@@ -58,72 +101,40 @@ button{
   width:34px;
 }
 
-.reset{
-  width:auto;
-  padding:12px 18px;
-  font-size:16px;
-  background:#444;
-  color:white;
+.action{
+  width:100%;
+  height:auto;
+  padding:14px;
+  font-size:18px;
   margin-top:14px;
+  border-radius:14px;
+  background:#ff4fa3;
+  color:white;
 }
 
-.bouquet-wrap{
-  margin-top:22px;
-  padding:18px;
-}
-
-.bouquet-paper{
-  background:linear-gradient(#f5f5f5,#e0e0e0);
-  border-radius:18px 18px 40px 40px;
-  padding:18px 12px 26px;
-  box-shadow:0 10px 20px rgba(0,0,0,0.12);
-  position:relative;
-  overflow:hidden;
-}
-
-.ribbon{
-  position:absolute;
-  bottom:8px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:26px;
-}
-
-#bouquet{
-  font-size:34px;
-  line-height:1.5;
-  min-height:80px;
-  word-wrap:break-word;
-}
-
-.flower-pop{
-  animation: pop .25s ease;
-}
-
-@keyframes pop{
-  from{ transform:scale(.6); opacity:.3; }
-  to{ transform:scale(1); opacity:1; }
+.reset{
+  background:#555;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<h1>💐 Composer un bouquet</h1>
 
-<h1>💐 Créateur de bouquet</h1>
-
-<div id="flowerList"></div>
-
-<button class="reset" onclick="resetAll()">Réinitialiser</button>
-
-<div class="bouquet-wrap">
+<!-- PREVIEW EN HAUT -->
+<div class="preview">
   <div class="bouquet-paper">
     <div id="bouquet"></div>
     <div class="ribbon">🎀</div>
   </div>
 </div>
 
+<div class="container">
+  <div id="flowerList"></div>
+
+  <button class="action" onclick="buildBouquet()">Former le bouquet</button>
+  <button class="action reset" onclick="resetAll()">Réinitialiser</button>
 </div>
 
 <script>
@@ -133,6 +144,7 @@ flowers.forEach(f => counts[f]=0);
 
 const list = document.getElementById("flowerList");
 
+/* créer lignes */
 flowers.forEach(f => {
   const row = document.createElement("div");
   row.className = "flower-row";
@@ -152,22 +164,37 @@ flowers.forEach(f => {
   list.appendChild(row);
 });
 
-function change(flower, delta){
-  counts[flower] = Math.max(0, counts[flower] + delta);
-  document.getElementById("count_"+flower).innerText = counts[flower];
-  renderBouquet(true);
+function change(f,delta){
+  counts[f] = Math.max(0, counts[f]+delta);
+  document.getElementById("count_"+f).innerText = counts[f];
 }
 
-function renderBouquet(animate=false){
-  let result = "";
-  flowers.forEach(f => result += f.repeat(counts[f]));
-  bouquet.innerText = result || "";
+/* 💐 construire bouquet visuel */
+function buildBouquet(){
+  bouquet.innerHTML = "";
 
-  if(animate){
-    bouquet.classList.remove("flower-pop");
-    void bouquet.offsetWidth;
-    bouquet.classList.add("flower-pop");
-  }
+  const all = [];
+  flowers.forEach(f=>{
+    for(let i=0;i<counts[f];i++) all.push(f);
+  });
+
+  all.forEach((f,i)=>{
+    const span = document.createElement("div");
+    span.className = "flower";
+    span.textContent = f;
+
+    // position bouquet (forme arrondie)
+    const angle = Math.random()*Math.PI;
+    const radius = Math.random()*45;
+    const x = 50 + Math.cos(angle)*radius;
+    const y = 90 - Math.sin(angle)*radius;
+
+    span.style.left = x + "%";
+    span.style.top = y + "%";
+    span.style.setProperty("--rot", (Math.random()*60-30)+"deg");
+
+    bouquet.appendChild(span);
+  });
 }
 
 function resetAll(){
@@ -175,10 +202,8 @@ function resetAll(){
     counts[f]=0;
     document.getElementById("count_"+f).innerText=0;
   });
-  renderBouquet();
+  bouquet.innerHTML="";
 }
-
-renderBouquet();
 </script>
 
 </body>
